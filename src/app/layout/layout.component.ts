@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-layout',
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LayoutComponent implements OnInit {
 
-  constructor() { }
+  public appTitle : string = '';
+
+  constructor(private titleService : Title) { }
 
   ngOnInit(): void {
+    this.appTitle = this.titleService.getTitle();
   }
 
 }
