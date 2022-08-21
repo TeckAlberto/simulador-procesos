@@ -1,1 +1,94 @@
-<p>manual-input works!</p>
+<div>
+    <h2 class="text-center">Ingresar procesos</h2>
+    <h5 class="text-left font-weight-bold">Procesos agregados: {{ processesQty }}</h5>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="row">
+            <div class="col-md-6">
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">Datos del programa</legend>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Número del programa</label>
+                        <div class="col-sm-8">
+                            <input
+                                type="number"
+                                min="1"
+                                class="form-control"
+                                placeholder="Ingrese ID"
+                                formControlName="programId"
+                                [class]="getClass('programId')"
+                            >
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Nombre del programador</label>
+                        <div class="col-sm-8">
+                            <input
+                                type="text"
+                                class="form-control"
+                                placeholder="Ingrese nombre del programador"
+                                formControlName="programmerName"
+                                [class]="getClass('programmerName')"
+                            >
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Tiempo máximo estimado</label>
+                        <div class="col-sm-8">
+                            <input
+                                type="number"
+                                min="1"
+                                class="form-control"
+                                placeholder="Ingrese tiempo maximo del programa"
+                                formControlName="maximumTime"
+                                [class]="getClass('maximumTime')"
+                            >
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="col-md-6">
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">Instrucciones del programa</legend>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Operador 1</label>
+                        <div class="col-sm-8">
+                            <input
+                                type="number"
+                                class="form-control"
+                                placeholder="Ingrese el primer operador"
+                                formControlName="operator1"
+                                [class]="getClass('operator1')"
+                            >
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Operacion</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" formControlName="operation" [class]="getClass('operation')">
+                                <option selected [value]="null" disabled>Seleccion la operación</option>
+                                <option *ngFor="let op of operations" [value]="op.operator">
+                                    {{ op.name }}
+                                    ({{ op.operator }})
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Operador 2</label>
+                        <div class="col-sm-8">
+                            <input
+                                type="number"
+                                class="form-control"
+                                placeholder="Ingrese el segundo operador"
+                                formControlName="operator2"
+                                [class]="getClass('operator2')"
+                            >
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        <button class="btn btn-success"> Agregar programa </button>
+    </form>
+</div>

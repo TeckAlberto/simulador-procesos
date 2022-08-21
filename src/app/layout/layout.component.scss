@@ -17,11 +17,13 @@
 }
 
 .page-nav-content{
+    color: white !important;
     transition: 0.3s;
 }
 
 .page-nav-content:hover{
     filter: opacity(60%);
+    cursor: pointer;
     transition: 0.3s;
 }
 
