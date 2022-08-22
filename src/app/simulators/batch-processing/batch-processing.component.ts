@@ -31,10 +31,10 @@ export class BatchProcessingComponent implements OnInit {
         this.batch = batch;
         console.log(batch);
       },
-    complete: () => {
-      this.toastr.success('Todos los trabajos terminados', 'Ejecución completa');
-      this.started = false;
-    }});
+      complete: () => {
+        this.toastr.success('Todos los trabajos terminados', 'Ejecución completa');
+        this.started = false;
+      }});
   }
 
 }
