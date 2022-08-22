@@ -43,7 +43,7 @@ export class InputService {
         operator1: this.randomNumber(),
         operator2: this.randomNumber(),
         operation: operation.operator,
-        maximumTime: this.randomNumber(1, 16)
+        maximumTime: this.randomNumber(1, 8)
       };
     }while(this.validateOperation(randomProcess));
 
@@ -57,6 +57,7 @@ export class InputService {
       (operator1 == 0 && operator2 == 0 && operation == enumOperations.POTENCIA)
     );
   }
+
   public randomNumber(min : number = -65536, max : number = 65536){
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
