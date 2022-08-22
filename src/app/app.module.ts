@@ -10,13 +10,15 @@ import { LayoutComponent } from './layout/layout.component';
 import { ManualInputComponent } from './input/manual-input/manual-input.component';
 import { BatchProcessingComponent } from './simulators/batch-processing/batch-processing.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MultiprogrammingComponent } from './simulators/multiprogramming/multiprogramming.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LayoutComponent,
     ManualInputComponent,
-    BatchProcessingComponent
+    BatchProcessingComponent,
+    MultiprogrammingComponent
   ],
   imports: [
     BrowserModule,

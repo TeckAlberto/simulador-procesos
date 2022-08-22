@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Process } from '../models/process.model';
-import { enumOperations, operations } from '../resources/operation.list';
+import { ENUM_OPERATIONS, operations } from '../resources/operation.list';
 
 @Injectable({
   providedIn: 'root'
@@ -53,8 +53,8 @@ export class InputService {
   public validateOperation(process : Process){
     const {operator1, operator2, operation} = process;
     return !(
-      (operator2 == 0 && (operation == enumOperations.DIVISION || operation == enumOperations.RESIDUO)) ||
-      (operator1 == 0 && operator2 == 0 && operation == enumOperations.POTENCIA)
+      (operator2 == 0 && (operation == ENUM_OPERATIONS.DIVISION || operation == ENUM_OPERATIONS.RESIDUO)) ||
+      (operator1 == 0 && operator2 == 0 && operation == ENUM_OPERATIONS.POTENCIA)
     );
   }
 

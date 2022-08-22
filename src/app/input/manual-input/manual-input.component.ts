@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { enumOperations, operations } from 'src/app/resources/operation.list';
+import { ENUM_OPERATIONS, operations } from 'src/app/resources/operation.list';
 import { InputService } from 'src/app/services/input.service';
 
 @Component({
@@ -65,12 +65,12 @@ export class ManualInputComponent implements OnInit {
     const op2 = this.getControl('operator2').value;
     const op = this.getControl('operation').value;
 
-    if(Number(op2) == 0 && (op == enumOperations.DIVISION || op == enumOperations.RESIDUO)){
+    if(Number(op2) == 0 && (op == ENUM_OPERATIONS.DIVISION || op == ENUM_OPERATIONS.RESIDUO)){
       this.toastr.error('No se puede dividir entre 0', 'Error de operacion');
       return;
     }
 
-    if(Number(op1) == 0 && Number(op2) == 0 && op == enumOperations.POTENCIA){
+    if(Number(op1) == 0 && Number(op2) == 0 && op == ENUM_OPERATIONS.POTENCIA){
       this.toastr.error('0^0 es indeterminado', 'Error de operacion');
       return;
     }

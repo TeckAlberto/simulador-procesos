@@ -5,16 +5,16 @@ export const operations = [
     { name: 'División', operator: '/' },
     { name: 'Residuo', operator: '%' },
     { name: 'Potencia', operator: '^' }
-]
+];
 
-export const enumOperations = {
+export const ENUM_OPERATIONS = {
     SUMA: '+',
     RESTA: '-',
     MULTIPLICACION: '*',
     DIVISION: '/',
     RESIDUO: '%',
     POTENCIA: '^'
-}
+};
 
 export interface Operation{
     (a: number,b : number) : number
