@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BatchProcess, Process } from 'src/app/models/process.model';
+import { functionOperations } from 'src/app/resources/operation.list';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,8 @@ export class BatchProcessingService {
       doneProcesses: [],
       executingProcess: null,
       globalCounter: 0,
-      pendingBatches: this.batches.length
+      pendingBatches: this.batches.length,
+      elapsedTime: 0
     };
     return this.batch;
   }
@@ -34,24 +36,31 @@ export class BatchProcessingService {
 
     const observer = async() => {
 
-      while(this.batches.length > 0 || this.batch.currentBatch != null){
+      while(this.batches.length > 0 || this.batch.executingProcess != null){
         this.batch.currentBatch = this.batches.shift()!;
         this.batch.pendingBatches = this.batches.length;
         
         while(this.batch.currentBatch.length > 0){
           this.batch.executingProcess = this.batch.currentBatch.shift()!;
+          this.batch.elapsedTime = 0;
           value.next(this.batch);
 
           for(let i = 0; i < this.batch.executingProcess.maximumTime; i++){
             await this.delay(1000);
             this.batch.globalCounter++;
+            this.batch.elapsedTime++;
             value.next(this.batch);
           }
+          const { operator1, operation, operator2 } = this.batch.executingProcess;
           
+          const f : any = functionOperations.get(operation);
+          this.batch.executingProcess.result = f(operator1, operator2);
           this.batch.doneProcesses.push(this.batch.executingProcess);
           value.next(this.batch);
         }
+        this.batch.executingProcess = null;
       }
+      value.complete();
     }
 
     observer();

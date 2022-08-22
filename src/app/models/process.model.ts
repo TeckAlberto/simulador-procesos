@@ -11,6 +11,7 @@ export interface Process{
 export interface BatchProcess{
     pendingBatches : number,
     currentBatch : Process[],
+    elapsedTime : number,
     executingProcess : Process | null,
     doneProcesses: Process[],
     globalCounter : number

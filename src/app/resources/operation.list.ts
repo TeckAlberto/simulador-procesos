@@ -15,3 +15,16 @@ export const enumOperations = {
     RESIDUO: '%',
     POTENCIA: '^'
 }
+
+export interface Operation{
+    (a: number,b : number) : number
+};
+
+export const functionOperations = new Map<string, Operation>([
+    ['+', ((a: number, b:number) => a + b)],
+    ['-', ((a: number, b:number) => a - b)],
+    ['*', ((a: number, b:number) => a * b)],
+    ['/', ((a: number, b:number) => a / b)],
+    ['%', ((a: number, b:number) => a % b)],
+    ['^', ((a: number, b:number) => Math.pow(a, b))]
+]);
