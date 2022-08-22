@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { InputService } from 'src/app/services/input.service';
+import { BatchProcessingService } from 'src/app/services/simulators/batch-processing.service';
 
 @Component({
   selector: 'app-batch-processing',
@@ -7,9 +10,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BatchProcessingComponent implements OnInit {
 
-  constructor() { }
+  public started = false;
+
+  constructor(private input           : InputService,
+              private batchProcessing : BatchProcessingService) { }
 
   ngOnInit(): void {
+    this.batchProcessing.initSimulator(this.input.getProcesses(), 3);
+  }
+
+  public startSimulation(){
+
   }
 
 }

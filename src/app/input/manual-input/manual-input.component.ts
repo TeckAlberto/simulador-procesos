@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { enumOperations, operations } from 'src/app/resources/operation.list';
 import { InputService } from 'src/app/services/input.service';
@@ -17,7 +18,8 @@ export class ManualInputComponent implements OnInit {
 
   constructor(private fb    : FormBuilder,
               private toastr: ToastrService,
-              private input : InputService) {
+              private input : InputService,
+              private router: Router) {
     this.form = this.fb.group({
       programmerName: ['', Validators.required],
       operation: [null, Validators.required],
@@ -78,5 +80,15 @@ export class ManualInputComponent implements OnInit {
     this.toastr.success('Programa agregado', 'Éxito');
     this.form.reset();
     this.processesQty = this.input.getProcesses().length;
+  }
+
+  public simulateInput(){
+    this.input.addRandomProcesses(Number(this.getControl('programId').value || 10));
+    this.execute();
+  }
+
+  public execute(){
+    // this.toastr.info('Ejecutando procesos', 'Ejecución iniciada');
+    this.router.navigate(['batch-processing']);
   }
 }

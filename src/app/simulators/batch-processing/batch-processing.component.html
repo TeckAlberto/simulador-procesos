@@ -1,1 +1,26 @@
-<p>batch-processing works!</p>
+<div>
+    <h2 class="text-center">Ejecución de procesos</h2>
+
+        <div class="row">
+            <div class="col-md-4">
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">Lote trabajado</legend>
+                </fieldset>
+            </div>
+            <div class="col-md-4">
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">Proceso en ejecución</legend>
+                </fieldset>
+            </div>
+            <div class="col-md-4">
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">Procesos terminados</legend>
+                </fieldset>
+            </div>
+        </div>
+
+        <button class="btn btn-success" [disabled]="started" (click)="startSimulation()">
+            Iniciar ejecución 
+            <i class="fas fa-play ml-3"></i>
+        </button>
+</div>

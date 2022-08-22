@@ -89,6 +89,18 @@
             </div>
         </div>
 
-        <button class="btn btn-success"> Agregar programa </button>
+        <button class="btn btn-primary m-2" type="submit">
+            Agregar programa 
+            <i class="fas fa-plus ml-2"></i>
+        </button>
+
+        <br>
+        <button class="btn btn-success m-2" [disabled]="processesQty == 0" (click)="execute()">
+             Ejecutar {{ processesQty }}
+             proceso<span *ngIf="processesQty != 1">s</span> 
+             <i class="fas fa-play ml-3"></i>
+        </button>
+
+        <br><button class="btn btn-danger my-2" (click)="simulateInput()"> No quiero probar </button>
     </form>
 </div>

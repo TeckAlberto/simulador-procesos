@@ -4,5 +4,14 @@ export interface Process{
     operator1: number,
     operator2: number,
     maximumTime: number,
-    programId: number
+    programId: number,
+    result? : number
+}
+
+export interface BatchProcess{
+    pendingBatches : number,
+    currentBatch : Process[],
+    executingProcess : Process,
+    doneProcesses: Process[],
+    globalCounter : number
 }
