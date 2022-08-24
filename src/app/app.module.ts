@@ -11,6 +11,7 @@ import { ManualInputComponent } from './input/manual-input/manual-input.componen
 import { BatchProcessingComponent } from './simulators/batch-processing/batch-processing.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MultiprogrammingComponent } from './simulators/multiprogramming/multiprogramming.component';
+import { AutomaticInputComponent } from './input/automatic-input/automatic-input.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { MultiprogrammingComponent } from './simulators/multiprogramming/multipr
     LayoutComponent,
     ManualInputComponent,
     BatchProcessingComponent,
-    MultiprogrammingComponent
+    MultiprogrammingComponent,
+    AutomaticInputComponent
   ],
   imports: [
     BrowserModule,
