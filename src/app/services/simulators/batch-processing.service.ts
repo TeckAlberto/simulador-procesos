@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BatchProcess, Process } from 'src/app/models/process.model';
-import { functionOperations } from 'src/app/resources/operation.list';
+import { defaultOperation, functionOperations, Operation } from 'src/app/resources/operation.list';
 
 @Injectable({
   providedIn: 'root'
@@ -35,8 +35,10 @@ export class BatchProcessingService {
     const observable = value.asObservable();
 
     const observer = async() => {
-
+      
+      let batchNumber = 0;
       while(this.batches.length > 0 || this.batch.executingProcess != null){
+        batchNumber++;
         this.batch.currentBatch = this.batches.shift()!;
         this.batch.pendingBatches = this.batches.length;
         
@@ -53,8 +55,9 @@ export class BatchProcessingService {
           }
           const { operator1, operation, operator2 } = this.batch.executingProcess;
           
-          const f : any = functionOperations.get(operation);
+          const f : Operation = functionOperations.get(operation) ?? defaultOperation;
           this.batch.executingProcess.result = f(operator1, operator2);
+          this.batch.executingProcess.batchNumber = batchNumber;
           this.batch.doneProcesses.push(this.batch.executingProcess);
           value.next(this.batch);
         }

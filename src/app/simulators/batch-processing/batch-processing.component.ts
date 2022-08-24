@@ -14,13 +14,14 @@ export class BatchProcessingComponent implements OnInit {
 
   public started = false;
   public batch : BatchProcess;
+  public BATCH_SIZE = 3;
 
   constructor(private input           : InputService,
               private batchProcessing : BatchProcessingService,
               private toastr          : ToastrService) { }
 
   ngOnInit(): void {
-    this.batch = this.batchProcessing.initSimulator(this.input.getProcesses(), 3);
+    this.batch = this.batchProcessing.initSimulator(this.input.getProcesses(), this.BATCH_SIZE);
   }
 
   public startSimulation(){
@@ -35,6 +36,14 @@ export class BatchProcessingComponent implements OnInit {
         this.toastr.success('Todos los trabajos terminados', 'Ejecución completa');
         this.started = false;
       }});
+  }
+
+  public getRowSpan(length : number, i : number){
+    const fullBatches = Math.floor(length / this.BATCH_SIZE);
+    if(i < fullBatches * this.BATCH_SIZE){
+      return i % this.BATCH_SIZE === 0 ? this.BATCH_SIZE : 0;
+    }
+    return i % this.BATCH_SIZE === 0 ? length % this.BATCH_SIZE : 0;
   }
 
 }

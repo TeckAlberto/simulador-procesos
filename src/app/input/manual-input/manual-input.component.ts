@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -15,6 +15,8 @@ export class ManualInputComponent implements OnInit {
   public form : FormGroup;
   public operations = operations;
   public processesQty : number;
+
+  @ViewChild('idInput') idInput : ElementRef;
 
   constructor(private fb    : FormBuilder,
               private toastr: ToastrService,
@@ -78,6 +80,7 @@ export class ManualInputComponent implements OnInit {
     const program = this.form.value;
     this.input.addProgram(program);
     this.toastr.success('Programa agregado', 'Éxito');
+    this.idInput.nativeElement.focus();      
     this.form.reset();
     this.processesQty = this.input.getProcesses().length;
   }

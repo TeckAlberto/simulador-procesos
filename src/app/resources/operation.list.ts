@@ -17,14 +17,16 @@ export const ENUM_OPERATIONS = {
 };
 
 export interface Operation{
-    (a: number,b : number) : number
+    (a: number, b: number) : number
 };
 
 export const functionOperations = new Map<string, Operation>([
-    ['+', ((a: number, b:number) => a + b)],
-    ['-', ((a: number, b:number) => a - b)],
-    ['*', ((a: number, b:number) => a * b)],
-    ['/', ((a: number, b:number) => a / b)],
-    ['%', ((a: number, b:number) => a % b)],
-    ['^', ((a: number, b:number) => Math.pow(a, b))]
+    ['+', (a: number, b:number) => a + b ],
+    ['-', (a: number, b:number) => a - b ],
+    ['*', (a: number, b:number) => a * b ],
+    ['/', (a: number, b:number) => a / b ],
+    ['%', (a: number, b:number) => a % b ],
+    ['^', (a: number, b:number) => Math.pow(a, b) ]
 ]);
+
+export const defaultOperation : Operation = (a: number, b: number) => a + b;

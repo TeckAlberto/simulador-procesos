@@ -5,7 +5,8 @@ export interface Process{
     operator2: number,
     maximumTime: number,
     programId: number,
-    result? : number
+    result? : number,
+    batchNumber? : number
 }
 
 export interface BatchProcess{
