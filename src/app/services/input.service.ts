@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Process } from '../models/process.model';
 import { ENUM_OPERATIONS, operations } from '../resources/operation.list';
 
@@ -9,7 +10,7 @@ export class InputService {
 
   private processes: Process[];
 
-  constructor() {
+  constructor(private route : ActivatedRoute) {
     this.processes = [];
    }
 
@@ -43,7 +44,7 @@ export class InputService {
         operator1: this.randomNumber(),
         operator2: this.randomNumber(),
         operation: operation.operator,
-        maximumTime: this.randomNumber(1, 8)
+        maximumTime: this.randomNumber(6, 16)
       };
     }while(!this.validateOperation(randomProcess));
 
@@ -58,11 +59,21 @@ export class InputService {
     );
   }
 
-  public randomNumber(min : number = -65536, max : number = 65536){
+  public randomNumber(min : number = -254, max : number = 255){
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
   public resetProcesses(){
     this.processes = [];
+  }
+
+  public nextRoute() : string[]{
+    let child = this.route.firstChild;
+
+    while (child?.firstChild) {
+      child = child.firstChild;
+    }
+    
+    return child?.snapshot.data['redirect'] ?? [''];
   }
 }

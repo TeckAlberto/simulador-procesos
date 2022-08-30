@@ -1,5 +1,6 @@
 import { Route } from "@angular/router";
 import { EmptyManualInputGuard } from "./guards/empty-manual-input.guard";
+import { AutomaticInputComponent } from "./input/automatic-input/automatic-input.component";
 import { ManualInputComponent } from "./input/manual-input/manual-input.component";
 import { LayoutComponent } from "./layout/layout.component";
 import { BatchProcessingComponent } from "./simulators/batch-processing/batch-processing.component";
@@ -15,6 +16,14 @@ export const AppRoutes : Route[] = [
                 component: ManualInputComponent,
                 data: {
                     title: 'Ingresar procesos'
+                }
+            },
+            {
+                path: 'input',
+                component: AutomaticInputComponent,
+                data: {
+                    title: 'Ingresar cantidad de procesos',
+                    redirect: ['multiprogramming']
                 }
             },
             {
@@ -35,7 +44,7 @@ export const AppRoutes : Route[] = [
             {
                 path: '',
                 pathMatch: 'full',
-                redirectTo: 'manual-input'
+                redirectTo: 'input'
             }
         ]
     }

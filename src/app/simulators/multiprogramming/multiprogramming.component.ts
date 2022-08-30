@@ -13,6 +13,7 @@ export class MultiprogrammingComponent implements OnInit {
 
   public started = false;
   public batch : BatchProcess;
+  public paused = false;
 
   constructor(private input           : InputService,
               private batchProcessing : BatchProcessingService,
@@ -38,25 +39,28 @@ export class MultiprogrammingComponent implements OnInit {
 
   @HostListener('document:keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    switch(event.key){
-      case 'e':
-      case 'E':
-        this.toastr.warning('Interrupción por entrada/salida', 'Interrupción (E)');
-        break;
-      case 'w':
-      case 'W':
-        this.toastr.error('Error de ejecución', 'Interrupción (W)');
-        break;
-      case 'p':
-      case 'P':
-        this.toastr.info('Ejecución en pausa', 'Interrupción (P)');
-        break;
-      case 'c':
-      case 'C':
-        this.toastr.info('Ejecución reanudada', 'Interrupción (C)');
-        break;
-      default:
-        break;
+    console.log('Tecla: ' + event.key);
+    if(!this.paused){
+      switch(event.key){
+        case 'e':
+        case 'E':
+          this.toastr.warning('Interrupción por entrada/salida', 'Interrupción (E)');
+          break;
+        case 'w':
+        case 'W':
+          this.toastr.error('Error de ejecución', 'Interrupción (W)');
+          break;
+        case 'p':
+        case 'P':
+          this.toastr.info('Ejecución en pausa', 'Interrupción (P)');
+          this.paused = true;
+          break;
+        default:
+          break;
+      }
+    }else if(event.key == 'C' || event.key == 'c'){
+      this.toastr.info('Ejecución reanudada', 'Interrupción (C)');
+      this.paused = false;
     }
   }
 

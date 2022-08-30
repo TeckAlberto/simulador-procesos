@@ -22,6 +22,9 @@ export class ManualInputComponent implements OnInit {
               private toastr: ToastrService,
               private input : InputService,
               private router: Router) {
+   }
+
+  ngOnInit(): void {
     this.form = this.fb.group({
       programmerName: ['', Validators.required],
       operation: [null, Validators.required],
@@ -32,9 +35,6 @@ export class ManualInputComponent implements OnInit {
     });
 
     this.processesQty = this.input.getProcesses().length;
-   }
-
-  ngOnInit(): void {
   }
 
   public getControl(ctrl : string){
