@@ -7,7 +7,7 @@ export interface Process{
     programId: number,
     result? : number,
     batchNumber? : number,
-    elapsedTime? : number
+    elapsedTime : number
 }
 
 export interface BatchProcess{
@@ -25,6 +25,7 @@ export interface MultiprogrammingProcess{
     executingProcess : Process | null,
     doneProcesses: Process[],
     globalCounter : number,
-    isPaused : boolean,
-    errorFlag: boolean
+    pauseFlag : boolean,
+    errorFlag: boolean,
+    interruptFlag : boolean
 }

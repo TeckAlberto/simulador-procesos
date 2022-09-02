@@ -33,9 +33,9 @@
                             </thead>
                             <tbody>
                                 <tr *ngFor="let job of batch.currentBatch">
-                                    <td> {{ job.programmerName }} </td>
+                                    <td> {{ job.programId }} </td>
                                     <td> {{ job.maximumTime }} </td>
-                                    <td> {{ job.elapsedTime }} </td>
+                                    <td> {{ job.elapsedTime/10 | number:'1.1' }} </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -83,11 +83,11 @@
                                 </tr>
                                 <tr>
                                     <td>Tiempo transcurrido</td>
-                                    <td> {{ batch.executingProcess.elapsedTime | number:'1.1' }} </td>
+                                    <td> {{ batch.executingProcess.elapsedTime/10 | number:'1.1' }} </td>
                                 </tr>
                                 <tr>
                                     <td>Tiempo restante</td>
-                                    <td>{{ ( batch.executingProcess.maximumTime - batch.executingProcess.elapsedTime! ) | number:'1.1' }} </td>
+                                    <td>{{ ( batch.executingProcess.maximumTime - batch.executingProcess.elapsedTime/10 ) | number:'1.1' }} </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -103,12 +103,15 @@
                     <div class="table-responsive">
                         <table class="table table-bordered table-sm" *ngIf="batch.doneProcesses.length > 0; else not_done_works">
                             <thead>
+                                <th>Lote</th>
                                 <th>ID</th>
                                 <th>Operación</th>
                                 <th>Resultado</th>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let job of batch.doneProcesses">
+                                <tr *ngFor="let job of batch.doneProcesses; let i = index; let l = count">
+                                    <td *ngIf="i % BATCH_SIZE === 0" [rowSpan]="getRowSpan(l, i)"
+                                        class="align-middle"> {{ job.batchNumber }}</td>
                                     <td> {{ job.programId }} </td>
                                     <td>
                                         {{ job.operator1 }}

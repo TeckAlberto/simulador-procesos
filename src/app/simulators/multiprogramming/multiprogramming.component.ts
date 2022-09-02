@@ -14,13 +14,14 @@ export class MultiprogrammingComponent implements OnInit {
   public started = false;
   public batch : MultiprogrammingProcess;
   public paused = false;
+  public BATCH_SIZE = 3;
 
   constructor(private input           : InputService,
               private batchProcessing : BatchMultiprogrammingProcessingService,
               private toastr          : ToastrService) { }
 
   ngOnInit(): void {
-    this.batch = this.batchProcessing.initSimulator(this.input.getProcesses(), 3);
+    this.batch = this.batchProcessing.initSimulator(this.input.getProcesses(), this.BATCH_SIZE);
   }
 
   public startSimulation(){
@@ -29,7 +30,6 @@ export class MultiprogrammingComponent implements OnInit {
     this.batchProcessing.executeSimulator().subscribe({
       next: (batch) => {
         this.batch = batch;
-        console.log(batch);
       },
       complete: () => {
         this.toastr.success('Todos los trabajos terminados', 'Ejecución completa');
@@ -45,6 +45,7 @@ export class MultiprogrammingComponent implements OnInit {
         case 'e':
         case 'E':
           this.toastr.warning('Interrupción por entrada/salida', 'Interrupción (E)');
+          this.batchProcessing.raiseIOInterrupt();
           break;
         case 'w':
         case 'W':
@@ -65,6 +66,14 @@ export class MultiprogrammingComponent implements OnInit {
       this.batchProcessing.resume();
       this.paused = false;
     }
+  }
+
+  public getRowSpan(length : number, i : number){
+    const fullBatches = Math.floor(length / this.BATCH_SIZE);
+    if(i < fullBatches * this.BATCH_SIZE){
+      return i % this.BATCH_SIZE === 0 ? this.BATCH_SIZE : 0;
+    }
+    return i % this.BATCH_SIZE === 0 ? length % this.BATCH_SIZE : 0;
   }
 
 }

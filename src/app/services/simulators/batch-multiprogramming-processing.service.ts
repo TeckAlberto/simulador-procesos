@@ -25,8 +25,9 @@ export class BatchMultiprogrammingProcessingService {
       executingProcess: null,
       globalCounter: 0,
       pendingBatches: this.batches.length,
-      isPaused: false,
-      errorFlag: false
+      pauseFlag: false,
+      errorFlag: false,
+      interruptFlag: false
     };
     return this.batch;
   }
@@ -47,32 +48,42 @@ export class BatchMultiprogrammingProcessingService {
           this.batch.executingProcess = this.batch.currentBatch.shift()!;
           value.next(this.batch);
 
-          for(let i = 1; i <= this.batch.executingProcess.maximumTime * 10; i++){
+          for(let i = this.batch.executingProcess.elapsedTime; i < this.batch.executingProcess.maximumTime * 10; i++){
             do{
               await this.delay(100);
-            }while(this.batch.isPaused);
+            }while(this.batch.pauseFlag);
             
-            if(this.batch.errorFlag){
+            if(this.batch.errorFlag || this.batch.interruptFlag){
               break;
             }
-            this.batch.executingProcess.elapsedTime! += 0.1;
 
-            if(i % 10 == 0){
+            this.batch.executingProcess.elapsedTime += 1;
+            if(i % 10 == 0 && i != 0){
               this.batch.globalCounter++;
             }
+
             value.next(this.batch);
           }
-          const { operator1, operation, operator2 } = this.batch.executingProcess;
           
+          const { operator1, operation, operator2 } = this.batch.executingProcess;
           const f : Operation = functionOperations.get(operation) ?? defaultOperation;
+
           if(this.batch.errorFlag){
+            this.batch.executingProcess.result = undefined;
             this.batch.errorFlag = false; //Clear
+          }else if(this.batch.interruptFlag){
+            console.log(this.batch.currentBatch);
+            this.batch.currentBatch.push(this.batch.executingProcess);
+            this.batch.interruptFlag  = false; //Clear
+            continue;
           }else{
             this.batch.executingProcess.result = f(operator1, operator2);
           }
+          
           this.batch.executingProcess.batchNumber = batchNumber;
           this.batch.doneProcesses.push(this.batch.executingProcess);
           value.next(this.batch);
+          console.log('Finalizado');
         }
         this.batch.executingProcess = null;
       }
@@ -107,14 +118,18 @@ export class BatchMultiprogrammingProcessingService {
   }
 
   public pause() : void{
-    this.batch.isPaused = true;
+    this.batch.pauseFlag = true;
   }
 
   public resume() : void{
-    this.batch.isPaused = false;
+    this.batch.pauseFlag = false;
   }
 
   public raiseError() : void {
     this.batch.errorFlag = true;
+  }
+
+  public raiseIOInterrupt() : void{
+    this.batch.interruptFlag = true;
   }
 }
