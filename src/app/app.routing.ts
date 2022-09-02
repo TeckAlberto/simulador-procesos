@@ -1,4 +1,5 @@
 import { Route } from "@angular/router";
+import { EmptyAutomaticInputGuard } from "./guards/empty-automatic-input.guard";
 import { EmptyManualInputGuard } from "./guards/empty-manual-input.guard";
 import { AutomaticInputComponent } from "./input/automatic-input/automatic-input.component";
 import { ManualInputComponent } from "./input/manual-input/manual-input.component";
@@ -37,6 +38,7 @@ export const AppRoutes : Route[] = [
             {
                 path: 'multiprogramming',
                 component: MultiprogrammingComponent,
+                canActivate: [ EmptyAutomaticInputGuard ],
                 data: {
                     title: 'Procesamiento con multiprogramación'
                 }

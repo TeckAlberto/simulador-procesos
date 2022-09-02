@@ -1,8 +1,8 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { BatchProcess } from 'src/app/models/process.model';
+import { BatchProcess, MultiprogrammingProcess } from 'src/app/models/process.model';
 import { InputService } from 'src/app/services/input.service';
-import { BatchProcessingService } from 'src/app/services/simulators/batch-processing.service';
+import { BatchMultiprogrammingProcessingService } from 'src/app/services/simulators/batch-multiprogramming-processing.service';
 
 @Component({
   selector: 'app-multiprogramming',
@@ -12,11 +12,11 @@ import { BatchProcessingService } from 'src/app/services/simulators/batch-proces
 export class MultiprogrammingComponent implements OnInit {
 
   public started = false;
-  public batch : BatchProcess;
+  public batch : MultiprogrammingProcess;
   public paused = false;
 
   constructor(private input           : InputService,
-              private batchProcessing : BatchProcessingService,
+              private batchProcessing : BatchMultiprogrammingProcessingService,
               private toastr          : ToastrService) { }
 
   ngOnInit(): void {
@@ -49,10 +49,12 @@ export class MultiprogrammingComponent implements OnInit {
         case 'w':
         case 'W':
           this.toastr.error('Error de ejecución', 'Interrupción (W)');
+          this.batchProcessing.raiseError();
           break;
         case 'p':
         case 'P':
           this.toastr.info('Ejecución en pausa', 'Interrupción (P)');
+          this.batchProcessing.pause();
           this.paused = true;
           break;
         default:
@@ -60,6 +62,7 @@ export class MultiprogrammingComponent implements OnInit {
       }
     }else if(event.key == 'C' || event.key == 'c'){
       this.toastr.info('Ejecución reanudada', 'Interrupción (C)');
+      this.batchProcessing.resume();
       this.paused = false;
     }
   }

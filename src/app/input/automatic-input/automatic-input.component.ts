@@ -39,7 +39,6 @@ export class AutomaticInputComponent implements OnInit {
   }
   
   public submit(){
-    console.log('XD')
     this.form.markAllAsTouched();
 
     if(this.form.invalid){
@@ -54,6 +53,7 @@ export class AutomaticInputComponent implements OnInit {
 
   public execute(){
     // this.toastr.info('Ejecutando procesos', 'Ejecución iniciada');
+    console.log(this.input.getProcesses());
     this.router.navigate(this.input.nextRoute());
   }
 

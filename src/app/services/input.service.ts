@@ -44,7 +44,8 @@ export class InputService {
         operator1: this.randomNumber(),
         operator2: this.randomNumber(),
         operation: operation.operator,
-        maximumTime: this.randomNumber(6, 16)
+        maximumTime: this.randomNumber(6, 16),
+        elapsedTime: 0
       };
     }while(!this.validateOperation(randomProcess));
 

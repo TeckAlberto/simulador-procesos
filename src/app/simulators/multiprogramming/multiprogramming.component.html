@@ -1,6 +1,5 @@
 <div>
     <h2 class="text-center">
-        <div class="clock" [ngClass]="{'hidden-clock': !started}"></div>
         Ejecución de procesos
     </h2>
 
@@ -28,13 +27,15 @@
                     <div class="table-responsive">
                         <table class="table table-bordered table-sm" *ngIf="batch.currentBatch.length > 0; else not_working_batch">
                             <thead>
-                                <th>Programador</th>
-                                <th>TME</th>
+                                <th>ID Programa</th>
+                                <th>Tiempo máximo</th>
+                                <th>Tiempo transcurrido</th>
                             </thead>
                             <tbody>
                                 <tr *ngFor="let job of batch.currentBatch">
                                     <td> {{ job.programmerName }} </td>
                                     <td> {{ job.maximumTime }} </td>
+                                    <td> {{ job.elapsedTime }} </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -82,11 +83,11 @@
                                 </tr>
                                 <tr>
                                     <td>Tiempo transcurrido</td>
-                                    <td>{{ batch.elapsedTime }} </td>
+                                    <td> {{ batch.executingProcess.elapsedTime | number:'1.1' }} </td>
                                 </tr>
                                 <tr>
                                     <td>Tiempo restante</td>
-                                    <td>{{ batch.executingProcess.maximumTime - batch.elapsedTime }} </td>
+                                    <td>{{ ( batch.executingProcess.maximumTime - batch.executingProcess.elapsedTime! ) | number:'1.1' }} </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -114,7 +115,14 @@
                                         {{ job.operation }} 
                                         {{ job.operator2 }}
                                     </td>
-                                    <td> {{ job.result }} </td>
+                                    
+                                    <td *ngIf="job.result">
+                                        {{ job.result | number:'1.0-3' }} 
+                                    </td>
+                                    <td *ngIf="!job.result">
+                                        ERROR
+                                        <i class="fas fa-exclamation text-danger ml-2"></i>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
