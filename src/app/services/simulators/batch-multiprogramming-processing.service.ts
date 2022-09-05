@@ -48,7 +48,7 @@ export class BatchMultiprogrammingProcessingService {
           this.batch.executingProcess = this.batch.currentBatch.shift()!;
           value.next(this.batch);
 
-          for(let i = this.batch.executingProcess.elapsedTime; i < this.batch.executingProcess.maximumTime * 10; i++){
+          for(let i = this.batch.executingProcess.elapsedTime + 1; i <= this.batch.executingProcess.maximumTime * 10; i++){
             do{
               await this.delay(100);
             }while(this.batch.pauseFlag);
@@ -58,32 +58,33 @@ export class BatchMultiprogrammingProcessingService {
             }
 
             this.batch.executingProcess.elapsedTime += 1;
-            if(i % 10 == 0 && i != 0){
+            if(i % 10 == 0){
               this.batch.globalCounter++;
             }
 
             value.next(this.batch);
           }
           
-          const { operator1, operation, operator2 } = this.batch.executingProcess;
-          const f : Operation = functionOperations.get(operation) ?? defaultOperation;
-
+          //Check flags
           if(this.batch.errorFlag){
-            this.batch.executingProcess.result = undefined;
-            this.batch.errorFlag = false; //Clear
+            this.batch.executingProcess.result = undefined; //It's already undefined, but to be clear
+            this.batch.errorFlag = false;                   //Clear flag
           }else if(this.batch.interruptFlag){
             console.log(this.batch.currentBatch);
             this.batch.currentBatch.push(this.batch.executingProcess);
-            this.batch.interruptFlag  = false; //Clear
-            continue;
+            this.batch.executingProcess = null;   //This occurs real fast, so it's not really necessary...
+            this.batch.interruptFlag  = false;    //Clear flag, 
+            value.next(this.batch);               //Update process and
+            continue;                             //Continue with next process on the queue
           }else{
+            const { operator1, operation, operator2 } = this.batch.executingProcess;
+            const f : Operation = functionOperations.get(operation) ?? defaultOperation;
             this.batch.executingProcess.result = f(operator1, operator2);
           }
           
           this.batch.executingProcess.batchNumber = batchNumber;
           this.batch.doneProcesses.push(this.batch.executingProcess);
           value.next(this.batch);
-          console.log('Finalizado');
         }
         this.batch.executingProcess = null;
       }

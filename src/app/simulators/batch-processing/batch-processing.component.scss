@@ -49,20 +49,20 @@ $clock_t: 4000ms;
   &:after, &:before {
     position: absolute;
     content: "";
-    transform-origin: ($clock_line / 2) ($clock_line / 2);
+    transform-origin: calc($clock_line / 2) calc($clock_line / 2);
     background-color: $clock_color;
     height: $clock_line;
-    top: $clock_r - ($clock_line / 2);
-    left: $clock_r - ($clock_line / 2);    
+    top: $clock_r - calc($clock_line / 2);
+    left: $clock_r - calc($clock_line / 2);    
   }
   
   &:before {
-    width: $clock_r * (5  / 6);
+    width: $clock_r * calc(5  / 6);
     animation: adjust-hue $clock_t linear infinite;
   }
   
   &:after {
-    width: $clock_r * (2 / 3);    
-    animation: adjust-hue ($clock_t * 4) linear infinite;         
+    width: $clock_r * calc(2 / 3);    
+    animation: adjust-hue calc($clock_t * 4) linear infinite;         
   }
 }
