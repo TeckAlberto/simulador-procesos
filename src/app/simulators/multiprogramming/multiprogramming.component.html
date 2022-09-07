@@ -16,6 +16,10 @@
                     <h4 class="text-left font-weight-bold">
                         Contador global:
                         {{ batch.globalCounter }}
+                        <span class="badge badge-secondary" *ngIf="paused">
+                            <i class="fas fa-pause pl-2 pr-1"></i>
+                            Pausado
+                        </span>
                     </h4>
                 </div>
             </div>
@@ -64,10 +68,6 @@
                                 <tr>
                                     <td>ID</td>
                                     <td>{{ batch.executingProcess.programId }} </td>
-                                </tr>
-                                <tr>
-                                    <td>Programador</td>
-                                    <td>{{ batch.executingProcess.programmerName }} </td>
                                 </tr>
                                 <tr>
                                     <td>Operacion</td>

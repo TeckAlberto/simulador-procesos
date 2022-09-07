@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { MultiprogrammingProcess, Process } from 'src/app/models/process.model';
 import { defaultOperation, functionOperations, Operation } from 'src/app/resources/operation.list';
 
+//Minimo 13 procesos
 @Injectable({
   providedIn: 'root'
 })
@@ -69,6 +70,7 @@ export class BatchMultiprogrammingProcessingService {
           if(this.batch.errorFlag){
             this.batch.executingProcess.result = undefined; //It's already undefined, but to be clear
             this.batch.errorFlag = false;                   //Clear flag
+
           }else if(this.batch.interruptFlag){
             console.log(this.batch.currentBatch);
             this.batch.currentBatch.push(this.batch.executingProcess);
@@ -76,6 +78,7 @@ export class BatchMultiprogrammingProcessingService {
             this.batch.interruptFlag  = false;    //Clear flag, 
             value.next(this.batch);               //Update process and
             continue;                             //Continue with next process on the queue
+
           }else{
             const { operator1, operation, operator2 } = this.batch.executingProcess;
             const f : Operation = functionOperations.get(operation) ?? defaultOperation;
