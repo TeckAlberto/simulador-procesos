@@ -23,7 +23,7 @@ export class FcfsComponent implements OnInit {
               private toastr  : ToastrService) { }
 
   ngOnInit(): void {
-    this.process = this.fcfs.initSimulator(this.input.getProcesses(), this.PROCESS_IN_MEMORY);
+    this.process = this.fcfs.initSimulator(this.input.getProcessesAsBCP(), this.PROCESS_IN_MEMORY);
   }
 
   public startSimulation(){

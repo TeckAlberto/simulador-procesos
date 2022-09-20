@@ -38,12 +38,15 @@ export interface BCP{
     programId: number,
     result? : number,
     elapsedTime : number,
+    startTime? : number,
+    finishTime? : number,
+
 }
 export interface FCFSProcess {
     newQty : number,
     globalCounter : number,
     ready : BCP[],
-    executing : BCP[],
+    executing : BCP | null,
     blocked: BCP[],
     finished : BCP[],
     pauseFlag : boolean,

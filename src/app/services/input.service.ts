@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Process } from '../models/process.model';
+import { BCP, Process } from '../models/process.model';
 import { ENUM_OPERATIONS, operations } from '../resources/operation.list';
 
 @Injectable({
@@ -76,5 +76,19 @@ export class InputService {
     }
     
     return child?.snapshot.data['redirect'] ?? [''];
+  }
+
+  public getProcessesAsBCP() : BCP[]{
+    return this.processes.map(p => {
+      return {
+        elapsedTime: p.elapsedTime,
+        maximumTime: p.maximumTime,
+        operation: p.operation,
+        operator1: p.operator1,
+        operator2: p.operator2,
+        programId: p.programId,
+        result: p.result
+      }
+    });
   }
 }

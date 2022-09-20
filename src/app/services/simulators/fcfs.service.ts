@@ -13,7 +13,7 @@ export class FcfsService {
 
   constructor() { }
 
-  public initSimulator(processes : Process[], cpuMemory : number) : FCFSProcess{
+  public initSimulator(processes : BCP[], cpuMemory : number) : FCFSProcess{
     this.newProcesses = processes;
     this.cpuMemory = cpuMemory;
     const firstProcesses : BCP[] = this.newProcesses.splice(0, this.cpuMemory);
@@ -21,7 +21,7 @@ export class FcfsService {
       newQty: this.newProcesses.length,
       ready: firstProcesses,
       blocked: [],
-      executing: [],
+      executing: null,
       finished: [],
       globalCounter: 0,
       pauseFlag: false,
