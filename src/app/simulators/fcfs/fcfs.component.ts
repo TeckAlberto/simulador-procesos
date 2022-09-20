@@ -78,4 +78,8 @@ export class FcfsComponent implements OnInit {
   public getBlockedTime(){
     return this.fcfs.TIME_IN_BLOCK;
   }
+
+  public viewBCPS(){
+    this.bcps.viewBCP();
+  }
 }

@@ -45,6 +45,7 @@ export class FcfsService {
         while (this.memoryUsed < this.cpuMemory && this.newProcesses.length > 0) {
           const newProcess = this.newProcesses.shift()!;
           newProcess.startTime = this.process.globalCounter;
+          newProcess.waitTime = 0;
           this.process.ready.push(newProcess);
           value.next(this.process);
         }
@@ -52,8 +53,9 @@ export class FcfsService {
         // Verificar si podemos tener un proceso ejecutándose
         if (this.process.executing == null && this.process.ready.length > 0) {
           this.process.executing = this.process.ready.shift()!;
+          
 
-          if (typeof this.process.executing.elapsedTime == 'undefined') {
+          if (typeof this.process.executing.responseTime == 'undefined') {
             this.process.executing.responseTime = this.process.globalCounter;
             this.process.executing.elapsedTime = 0;
           }
@@ -77,6 +79,7 @@ export class FcfsService {
           this.process.errorFlag = false;
           this.process.executing!.result = undefined;
           this.process.executing!.finishTime = this.process.globalCounter;
+          this.process.executing!.returnTime = this.process.executing!.finishTime - this.process.executing!.startTime!;
           this.process.finished.push(this.process.executing!);
           this.process.executing = null;
         }
@@ -98,6 +101,7 @@ export class FcfsService {
               const f: Operation = functionOperations.get(operation) ?? defaultOperation;
               this.process.executing!.result = f(operator1, operator2);
               this.process.executing!.finishTime = this.process.globalCounter;
+              this.process.executing!.returnTime = this.process.executing!.finishTime - this.process.executing.startTime!;
 
               this.process.finished.push(this.process.executing!);
               this.process.executing = null;
@@ -106,12 +110,15 @@ export class FcfsService {
 
           this.process.blocked = this.process.blocked.filter(b => {
             b.timeBlocked! += 1;
+            b.waitTime! += 1;
             if (b.timeBlocked == this.TIME_IN_BLOCK) {
               this.process.ready.push(b);
             }
 
             return b.timeBlocked! < this.TIME_IN_BLOCK;
           });
+
+          this.process.ready.forEach(r => r.waitTime!+=1 );
         }
         value.next(this.process);
 

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { BCP } from '../models/process.model';
+import { BcpViewerService } from '../services/bcp-viewer.service';
 
 @Component({
   selector: 'app-bcp-viewer',
@@ -7,9 +9,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BcpViewerComponent implements OnInit {
 
-  constructor() { }
+  public bcps : BCP[];
+
+  constructor(private bcp : BcpViewerService) { }
 
   ngOnInit(): void {
+    this.bcps = this.bcp.getBCPs();
   }
 
 }

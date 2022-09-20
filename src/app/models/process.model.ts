@@ -41,7 +41,9 @@ export interface BCP{
     startTime? : number,
     finishTime? : number,
     timeBlocked? : number,
-    responseTime? : number
+    responseTime? : number,
+    returnTime? : number,
+    waitTime? : number
 }
 
 export interface FCFSProcess {
