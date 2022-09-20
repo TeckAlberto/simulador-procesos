@@ -40,8 +40,10 @@ export interface BCP{
     elapsedTime : number,
     startTime? : number,
     finishTime? : number,
-
+    timeBlocked? : number,
+    responseTime? : number
 }
+
 export interface FCFSProcess {
     newQty : number,
     globalCounter : number,

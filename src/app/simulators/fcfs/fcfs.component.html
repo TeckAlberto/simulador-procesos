@@ -36,10 +36,13 @@
                                 <th>Tiempo transcurrido</th>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let job of process.ready">
-                                    <td> {{ job.programId }} </td>
+                                <tr *ngFor="let job of process.ready; let i = index">
+                                    <td>
+                                        <i class="fas fa-hand-point-right pointer" *ngIf="i == 0" title="Siguiente proceso"></i>
+                                        {{ job.programId }}
+                                    </td>
                                     <td> {{ job.maximumTime }} </td>
-                                    <td> {{ job.elapsedTime/10 | number:'1.1' }} </td>
+                                    <td> {{ job.elapsedTime }} </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -60,7 +63,7 @@
                             <tbody>
                                 <tr *ngFor="let job of process.blocked">
                                     <td> {{ job.programId }} </td>
-                                    <td> {{ job.maximumTime }} </td>
+                                    <td> {{ job.timeBlocked }} / {{ getBlockedTime() }} </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -98,11 +101,11 @@
                                 </tr>
                                 <tr>
                                     <td>Tiempo transcurrido</td>
-                                    <td> {{ process.executing.elapsedTime/10 | number:'1.1' }} </td>
+                                    <td> {{ process.executing.elapsedTime }} </td>
                                 </tr>
                                 <tr>
                                     <td>Tiempo restante</td>
-                                    <td>{{ ( process.executing.maximumTime - process.executing.elapsedTime/10 ) | number:'1.1' }} </td>
+                                    <td>{{ process.executing.maximumTime - process.executing.elapsedTime }} </td>
                                 </tr>
                             </tbody>
                         </table>

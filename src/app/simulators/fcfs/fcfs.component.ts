@@ -29,14 +29,16 @@ export class FcfsComponent implements OnInit {
   public startSimulation(){
     this.started = true;
     this.input.resetProcesses();
-    // this.batchProcessing.executeSimulator().subscribe({
-    //   next: (batch) => {
-    //     this.batch = batch;
-    //   },
-    //   complete: () => {
-    //     this.toastr.success('Todos los trabajos terminados', 'Ejecución completa');
-    //     this.started = false;
-    // }});
+    this.fcfs.executeSimulator().subscribe({
+      next: (process) => {
+        this.process = process;
+        console.log(this.process);
+      },
+      complete: () => {
+        this.toastr.success('Todos los trabajos terminados', 'Ejecución completa');
+        // this.started = false;
+        this.finished = true;
+    }});
   }
 
   @HostListener('document:keypress', ['$event'])
@@ -70,4 +72,7 @@ export class FcfsComponent implements OnInit {
     }
   }
 
+  public getBlockedTime(){
+    return this.fcfs.TIME_IN_BLOCK;
+  }
 }
