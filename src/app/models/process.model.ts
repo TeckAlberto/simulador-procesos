@@ -29,3 +29,24 @@ export interface MultiprogrammingProcess{
     errorFlag: boolean,
     interruptFlag : boolean
 }
+
+export interface BCP{
+    operation: string,
+    operator1: number,
+    operator2: number,
+    maximumTime: number,
+    programId: number,
+    result? : number,
+    elapsedTime : number,
+}
+export interface FCFSProcess {
+    newQty : number,
+    globalCounter : number,
+    ready : BCP[],
+    executing : BCP[],
+    blocked: BCP[],
+    finished : BCP[],
+    pauseFlag : boolean,
+    errorFlag : boolean,
+    interruptFlag : boolean,
+}

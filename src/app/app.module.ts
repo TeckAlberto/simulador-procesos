@@ -12,6 +12,7 @@ import { BatchProcessingComponent } from './simulators/batch-processing/batch-pr
 import { ReactiveFormsModule } from '@angular/forms';
 import { MultiprogrammingComponent } from './simulators/multiprogramming/multiprogramming.component';
 import { AutomaticInputComponent } from './input/automatic-input/automatic-input.component';
+import { FcfsComponent } from './simulators/fcfs/fcfs.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { AutomaticInputComponent } from './input/automatic-input/automatic-input
     ManualInputComponent,
     BatchProcessingComponent,
     MultiprogrammingComponent,
-    AutomaticInputComponent
+    AutomaticInputComponent,
+    FcfsComponent
   ],
   imports: [
     BrowserModule,

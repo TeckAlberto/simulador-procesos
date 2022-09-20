@@ -5,6 +5,7 @@ import { AutomaticInputComponent } from "./input/automatic-input/automatic-input
 import { ManualInputComponent } from "./input/manual-input/manual-input.component";
 import { LayoutComponent } from "./layout/layout.component";
 import { BatchProcessingComponent } from "./simulators/batch-processing/batch-processing.component";
+import { FcfsComponent } from "./simulators/fcfs/fcfs.component";
 import { MultiprogrammingComponent } from "./simulators/multiprogramming/multiprogramming.component";
 
 export const AppRoutes : Route[] = [
@@ -24,7 +25,7 @@ export const AppRoutes : Route[] = [
                 component: AutomaticInputComponent,
                 data: {
                     title: 'Ingresar cantidad de procesos',
-                    redirect: ['multiprogramming']
+                    redirect: ['fcfs']
                 }
             },
             {
@@ -41,6 +42,14 @@ export const AppRoutes : Route[] = [
                 canActivate: [ EmptyAutomaticInputGuard ],
                 data: {
                     title: 'Procesamiento con multiprogramación'
+                }
+            },
+            {
+                path: 'fcfs',
+                component: FcfsComponent,
+                canActivate:  [ EmptyAutomaticInputGuard ],
+                data: {
+                    title: 'First Come First Served'
                 }
             },
             {
