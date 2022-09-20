@@ -82,8 +82,10 @@ export class FcfsService {
         }
         else if (this.process.interruptFlag) {   // Terminó por interrupción
           this.process.interruptFlag = false;
-          this.process.executing!.timeBlocked = 0;
-          this.process.blocked.push(this.process.executing!);
+          if(this.process.executing != null){
+            this.process.executing!.timeBlocked = 0;
+            this.process.blocked.push(this.process.executing!);
+          }
           this.process.executing = null;
         } else {                                // Ciclo de reloj
           this.process.globalCounter++;

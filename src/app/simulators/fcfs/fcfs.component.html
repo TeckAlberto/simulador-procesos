@@ -77,36 +77,50 @@
                 <fieldset class="scheduler-border">
                     <legend class="scheduler-border">Proceso en ejecución</legend>
                     <div class="table-responsive">
-                        <table class="table table-bordered table-sm" *ngIf="process.executing != null; else not_working_process">
+                        <table class="table table-bordered table-sm" *ngIf="started; else not_working_process">
                             <thead>
                                 <th>Caracteristica</th>
                                 <th>Valor</th>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>ID</td>
-                                    <td>{{ process.executing.programId }} </td>
-                                </tr>
-                                <tr>
-                                    <td>Operacion</td>
-                                    <td>
-                                        {{ process.executing.operator1 }}
-                                        {{ process.executing.operation }} 
-                                        {{ process.executing.operator2 }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Tiempo maximo estimado</td>
-                                    <td>{{ process.executing.maximumTime }} </td>
-                                </tr>
-                                <tr>
-                                    <td>Tiempo transcurrido</td>
-                                    <td> {{ process.executing.elapsedTime }} </td>
-                                </tr>
-                                <tr>
-                                    <td>Tiempo restante</td>
-                                    <td>{{ process.executing.maximumTime - process.executing.elapsedTime }} </td>
-                                </tr>
+                                <ng-container *ngIf="process.executing != null; else null_process">
+                                    <tr>
+                                        <td>ID</td>
+                                        <td>{{ process.executing.programId }} </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Operacion</td>
+                                        <td>
+                                            {{ process.executing.operator1 }}
+                                            {{ process.executing.operation }} 
+                                            {{ process.executing.operator2 }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tiempo maximo estimado</td>
+                                        <td>{{ process.executing.maximumTime }} </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tiempo transcurrido</td>
+                                        <td> {{ process.executing.elapsedTime }} </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tiempo restante</td>
+                                        <td>{{ process.executing.maximumTime - process.executing.elapsedTime }} </td>
+                                    </tr>
+                                </ng-container>
+                                <ng-template #null_process>
+                                    <tr>
+                                        <td>ID</td>
+                                        <td rowspan="5">
+                                            Proceso nulo en ejecución
+                                        </td>
+                                    </tr>
+                                    <tr> <td>Operacion</td> </tr>
+                                    <tr> <td>Tiempo maximo estimado</td> </tr>
+                                    <tr> <td>Tiempo transcurrido</td> </tr>
+                                    <tr> <td>Tiempo restante</td> </tr>
+                                </ng-template>
                             </tbody>
                         </table>
                         <ng-template #not_working_process>

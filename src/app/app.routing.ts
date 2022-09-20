@@ -1,4 +1,6 @@
 import { Route } from "@angular/router";
+import { BcpViewerComponent } from "./bcp-viewer/bcp-viewer.component";
+import { BcpGuard } from "./guards/bcp.guard";
 import { EmptyAutomaticInputGuard } from "./guards/empty-automatic-input.guard";
 import { EmptyManualInputGuard } from "./guards/empty-manual-input.guard";
 import { AutomaticInputComponent } from "./input/automatic-input/automatic-input.component";
@@ -50,6 +52,14 @@ export const AppRoutes : Route[] = [
                 canActivate:  [ EmptyAutomaticInputGuard ],
                 data: {
                     title: 'First Come First Served'
+                }
+            },
+            {
+                path: 'bcp',
+                component: BcpViewerComponent,
+                canActivate: [ BcpGuard ],
+                data: {
+                    title: 'Ver BCPs'
                 }
             },
             {

@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { FCFSProcess } from 'src/app/models/process.model';
+import { BcpViewerService } from 'src/app/services/bcp-viewer.service';
 import { InputService } from 'src/app/services/input.service';
 import { FcfsService } from 'src/app/services/simulators/fcfs.service';
 
@@ -20,7 +21,8 @@ export class FcfsComponent implements OnInit {
 
   constructor(private input   : InputService,
               private fcfs    : FcfsService,
-              private toastr  : ToastrService) { }
+              private toastr  : ToastrService,
+              private bcps    : BcpViewerService) { }
 
   ngOnInit(): void {
     this.process = this.fcfs.initSimulator(this.input.getProcessesAsBCP(), this.PROCESS_IN_MEMORY);
@@ -38,6 +40,7 @@ export class FcfsComponent implements OnInit {
         this.toastr.success('Todos los trabajos terminados', 'Ejecución completa');
         // this.started = false;
         this.finished = true;
+        this.bcps.fcfsToBCP(this.process);
     }});
   }
 
