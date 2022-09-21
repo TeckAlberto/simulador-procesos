@@ -30,7 +30,6 @@ export class FcfsService {
       errorFlag: false,
       interruptFlag: false
     };
-    console.log(this.newProcesses);
     return this.process;
   }
 
@@ -47,6 +46,7 @@ export class FcfsService {
           newProcess.startTime = this.process.globalCounter;
           newProcess.waitTime = 0;
           this.process.ready.push(newProcess);
+          this.process.newQty = this.newProcesses.length;
           value.next(this.process);
         }
 
@@ -54,7 +54,7 @@ export class FcfsService {
         if (this.process.executing == null && this.process.ready.length > 0) {
           this.process.executing = this.process.ready.shift()!;
           
-
+          // Calculamos su tiempo de respuesta
           if (typeof this.process.executing.responseTime == 'undefined') {
             this.process.executing.responseTime = this.process.globalCounter;
             this.process.executing.elapsedTime = 0;
@@ -65,9 +65,11 @@ export class FcfsService {
 
         // Ciclo de reloj, 10 ticks de 100ms
         for (let i = 0; i < 10; i++) {
+          // En caso de estar en pausa
           do {
             await this.delay(100);
           } while (this.process.pauseFlag);
+          // Salir si se produce una interrupción
           if (this.process.errorFlag || this.process.interruptFlag) {
             break;
           }
@@ -77,11 +79,13 @@ export class FcfsService {
 
         if (this.process.errorFlag) {           //Terminó por error
           this.process.errorFlag = false;
-          this.process.executing!.result = undefined;
-          this.process.executing!.finishTime = this.process.globalCounter;
-          this.process.executing!.returnTime = this.process.executing!.finishTime - this.process.executing!.startTime!;
-          this.process.finished.push(this.process.executing!);
-          this.process.executing = null;
+          if(this.process.executing != null){
+            this.process.executing.result = undefined;
+            this.process.executing.finishTime = this.process.globalCounter;
+            this.process.executing.returnTime = this.process.executing.finishTime - this.process.executing.startTime!;
+            this.process.finished.push(this.process.executing);
+            this.process.executing = null;
+          }
         }
         else if (this.process.interruptFlag) {   // Terminó por interrupción
           this.process.interruptFlag = false;
@@ -90,13 +94,13 @@ export class FcfsService {
             this.process.blocked.push(this.process.executing!);
           }
           this.process.executing = null;
-        } else {                                // Ciclo de reloj
+        } else {                                // Ciclo de reloj, terminó naturalmente
           this.process.globalCounter++;
 
           if (this.process.executing != null) { // Si no es proceso nulo
             this.process.executing!.elapsedTime += 1;
 
-            if (this.process.executing!.elapsedTime == this.process.executing!.maximumTime) {
+            if (this.process.executing!.elapsedTime == this.process.executing!.maximumTime) {  //Si se acabó
               const { operator1, operation, operator2 } = this.process.executing!;
               const f: Operation = functionOperations.get(operation) ?? defaultOperation;
               this.process.executing!.result = f(operator1, operator2);
@@ -108,17 +112,21 @@ export class FcfsService {
             }
           }
 
+          // Sumar 1 de tiempo de espera a los procesos listos
+          this.process.ready.forEach(r => r.waitTime!+=1 );
+
+          // Actualizar procesos bloqueados
           this.process.blocked = this.process.blocked.filter(b => {
             b.timeBlocked! += 1;
             b.waitTime! += 1;
             if (b.timeBlocked == this.TIME_IN_BLOCK) {
               this.process.ready.push(b);
+              return false;
             }
-
-            return b.timeBlocked! < this.TIME_IN_BLOCK;
+            
+            return true;
           });
 
-          this.process.ready.forEach(r => r.waitTime!+=1 );
         }
         value.next(this.process);
 
@@ -130,7 +138,7 @@ export class FcfsService {
     return observable;
   }
 
-  private get memoryUsed(): number {
+  public get memoryUsed(): number {
     let count = 0;
     if (this.process.executing != null) {
       count += 1;

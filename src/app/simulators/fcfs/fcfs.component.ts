@@ -82,4 +82,8 @@ export class FcfsComponent implements OnInit {
   public viewBCPS(){
     this.bcps.viewBCP();
   }
+
+  public getMemoryUsed(){
+    return this.fcfs.memoryUsed;
+  }
 }

@@ -6,13 +6,19 @@
         <fieldset class="scheduler-border">
             <legend class="scheduler-border">Detalles</legend>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <h4 class="text-left font-weight-bold">
                         Procesos nuevos:
                         {{ process.newQty }} 
                     </h4>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
+                    <h4 class="text-left font-weight-bold">
+                        Procesos en memoria:
+                        {{ getMemoryUsed() }} 
+                    </h4>
+                </div>
+                <div class="col-md-4">
                     <h4 class="text-left font-weight-bold">
                         Contador global:
                         {{ process.globalCounter }}
