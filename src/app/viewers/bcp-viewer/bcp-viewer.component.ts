@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { BCP } from '../models/process.model';
-import { BcpViewerService } from '../services/bcp-viewer.service';
+import { BCP } from '../../models/process.model';
+import { BcpViewerService } from '../../services/bcp-viewer.service';
 
 @Component({
   selector: 'app-bcp-viewer',

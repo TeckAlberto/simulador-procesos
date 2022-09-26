@@ -1,5 +1,5 @@
 import { Route } from "@angular/router";
-import { BcpViewerComponent } from "./bcp-viewer/bcp-viewer.component";
+import { BcpViewerComponent } from "./viewers/bcp-viewer/bcp-viewer.component";
 import { BcpGuard } from "./guards/bcp.guard";
 import { EmptyAutomaticInputGuard } from "./guards/empty-automatic-input.guard";
 import { EmptyManualInputGuard } from "./guards/empty-manual-input.guard";
@@ -7,6 +7,7 @@ import { AutomaticInputComponent } from "./input/automatic-input/automatic-input
 import { ManualInputComponent } from "./input/manual-input/manual-input.component";
 import { LayoutComponent } from "./layout/layout.component";
 import { BatchProcessingComponent } from "./simulators/batch-processing/batch-processing.component";
+import { FcfsContinuacionComponent } from "./simulators/fcfs-continuacion/fcfs-continuacion.component";
 import { FcfsComponent } from "./simulators/fcfs/fcfs.component";
 import { MultiprogrammingComponent } from "./simulators/multiprogramming/multiprogramming.component";
 
@@ -27,7 +28,7 @@ export const AppRoutes : Route[] = [
                 component: AutomaticInputComponent,
                 data: {
                     title: 'Ingresar cantidad de procesos',
-                    redirect: ['fcfs']
+                    redirect: ['fcfs-2']
                 }
             },
             {
@@ -52,6 +53,14 @@ export const AppRoutes : Route[] = [
                 canActivate:  [ EmptyAutomaticInputGuard ],
                 data: {
                     title: 'First Come First Served'
+                }
+            },
+            {
+                path: 'fcfs-2',
+                component: FcfsContinuacionComponent,
+                canActivate: [ EmptyAutomaticInputGuard ],
+                data: {
+                    title: 'First Come First Served II'
                 }
             },
             {

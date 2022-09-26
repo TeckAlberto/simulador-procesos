@@ -13,7 +13,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MultiprogrammingComponent } from './simulators/multiprogramming/multiprogramming.component';
 import { AutomaticInputComponent } from './input/automatic-input/automatic-input.component';
 import { FcfsComponent } from './simulators/fcfs/fcfs.component';
-import { BcpViewerComponent } from './bcp-viewer/bcp-viewer.component';
+import { BcpViewerComponent } from './viewers/bcp-viewer/bcp-viewer.component';
+import { FcfsContinuacionComponent } from './simulators/fcfs-continuacion/fcfs-continuacion.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { BcpViewerComponent } from './bcp-viewer/bcp-viewer.component';
     MultiprogrammingComponent,
     AutomaticInputComponent,
     FcfsComponent,
-    BcpViewerComponent
+    BcpViewerComponent,
+    FcfsContinuacionComponent
   ],
   imports: [
     BrowserModule,
