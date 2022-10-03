@@ -1,9 +1,11 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, Type } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { FCFSProcess } from 'src/app/models/process.model';
 import { BcpViewerService } from 'src/app/services/bcp-viewer.service';
 import { InputService } from 'src/app/services/input.service';
 import { FcfsService } from 'src/app/services/simulators/fcfs.service';
+import { BcpExtendedViewerComponent } from 'src/app/viewers/bcp-extended-viewer/bcp-extended-viewer.component';
 
 @Component({
   selector: 'app-fcfs-continuacion',
@@ -22,7 +24,8 @@ export class FcfsContinuacionComponent implements OnInit {
   constructor(private input   : InputService,
               private fcfs    : FcfsService,
               private toastr  : ToastrService,
-              private bcps    : BcpViewerService) { }
+              private bcps    : BcpViewerService,
+              private modal   : NgbModal) { }
 
   ngOnInit(): void {
     this.process = this.fcfs.initSimulator(this.input.getProcessesAsBCP(), this.PROCESS_IN_MEMORY);
@@ -64,6 +67,10 @@ export class FcfsContinuacionComponent implements OnInit {
           this.toastr.info('Ejecución en pausa', 'Interrupción (P)');
           this.paused = true;
           this.fcfs.pause();
+          break;
+        case 'b':
+        case 'B':
+          this.modal.open(BcpExtendedViewerComponent);
           break;
         default:
           break;

@@ -15,6 +15,8 @@ import { AutomaticInputComponent } from './input/automatic-input/automatic-input
 import { FcfsComponent } from './simulators/fcfs/fcfs.component';
 import { BcpViewerComponent } from './viewers/bcp-viewer/bcp-viewer.component';
 import { FcfsContinuacionComponent } from './simulators/fcfs-continuacion/fcfs-continuacion.component';
+import { NgbActiveModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { BcpExtendedViewerComponent } from './viewers/bcp-extended-viewer/bcp-extended-viewer.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,8 @@ import { FcfsContinuacionComponent } from './simulators/fcfs-continuacion/fcfs-c
     AutomaticInputComponent,
     FcfsComponent,
     BcpViewerComponent,
-    FcfsContinuacionComponent
+    FcfsContinuacionComponent,
+    BcpExtendedViewerComponent,
   ],
   imports: [
     BrowserModule,
@@ -39,9 +42,12 @@ import { FcfsContinuacionComponent } from './simulators/fcfs-continuacion/fcfs-c
       closeButton: true
     }),
     RouterModule.forRoot(AppRoutes),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgbModule
   ],
-  providers: [],
+  providers: [
+    NgbActiveModal
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
