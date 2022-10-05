@@ -39,7 +39,8 @@
                             <thead>
                                 <th>ID Programa</th>
                                 <th>Tiempo máximo</th>
-                                <th>Tiempo transcurrido</th>
+                                <!-- <th>Tiempo transcurrido</th> -->
+                                <th>Tiempo restante</th>
                             </thead>
                             <tbody>
                                 <tr *ngFor="let job of process.ready; let i = index">
@@ -48,7 +49,8 @@
                                         {{ job.programId }}
                                     </td>
                                     <td> {{ job.maximumTime }} </td>
-                                    <td> {{ job.elapsedTime }} </td>
+                                    <!-- <td> {{ job.elapsedTime }} </td> -->
+                                    <td> {{ job.maximumTime - job.elapsedTime }} </td>
                                 </tr>
                             </tbody>
                         </table>

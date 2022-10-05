@@ -1,8 +1,7 @@
 import { Component, HostListener, OnInit, Type } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { BCP, FCFSProcess } from 'src/app/models/process.model';
-import { BcpViewerService } from 'src/app/services/bcp-viewer.service';
+import { FCFSProcess } from 'src/app/models/process.model';
 import { InputService } from 'src/app/services/input.service';
 import { FcfsService } from 'src/app/services/simulators/fcfs.service';
 import { BcpExtendedViewerComponent } from 'src/app/viewers/bcp-extended-viewer/bcp-extended-viewer.component';
@@ -25,7 +24,6 @@ export class FcfsContinuacionComponent implements OnInit {
   constructor(private input   : InputService,
               private fcfs    : FcfsService,
               private toastr  : ToastrService,
-              private bcps    : BcpViewerService,
               private modal   : NgbModal) { }
 
   ngOnInit(): void {
@@ -43,8 +41,10 @@ export class FcfsContinuacionComponent implements OnInit {
       complete: () => {
         this.toastr.success('Todos los trabajos terminados', 'Ejecución completa');
         // this.started = false;
+        this.modalRef = this.modal.open(BcpExtendedViewerComponent, { size: 'xl', scrollable: true, centered: true });
+        this.modalRef.componentInstance.bcps = this.fcfs.getBCPS();
         this.finished = true;
-        this.bcps.fcfsToBCP(this.process);
+        // this.bcps.fcfsToBCP(this.process);
     }});
   }
 
@@ -102,10 +102,6 @@ export class FcfsContinuacionComponent implements OnInit {
 
   public getBlockedTime(){
     return this.fcfs.TIME_IN_BLOCK;
-  }
-
-  public viewBCPS(){
-    this.bcps.viewBCP();
   }
 
   public getMemoryUsed(){

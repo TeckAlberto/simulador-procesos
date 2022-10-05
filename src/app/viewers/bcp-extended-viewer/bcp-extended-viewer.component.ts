@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { BCP } from 'src/app/models/process.model';
+import { defaultStatusIcon, statusIcons } from 'src/app/resources/bcp.status.list';
 
 @Component({
   selector: 'app-bcp-extended-viewer',
@@ -14,6 +15,14 @@ export class BcpExtendedViewerComponent implements OnInit {
   constructor(public modal : NgbActiveModal) { }
 
   ngOnInit(): void {
+  }
+
+  public isValid(value : number | undefined){
+    return value || value == 0;
+  }
+
+  public getIcon(status : string) : string{
+    return statusIcons.get(status) ?? defaultStatusIcon;
   }
 
 }

@@ -187,7 +187,7 @@ export class FcfsService {
   }
 
   public addRandomProcess() : void{
-    const id = this.getTotalProcessCount();
+    const id = this.getTotalProcessCount() + 1;
     const newProcess : BCP = this.automaticInput.getRandomBCP(id);
     this.process.inputFlag = true;
     this.newProcesses.push(newProcess); 
