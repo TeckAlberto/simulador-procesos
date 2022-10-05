@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BCP, FCFSProcess } from 'src/app/models/process.model';
 import { defaultOperation, functionOperations, Operation } from 'src/app/resources/operation.list';
+import { InputService } from '../input.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class FcfsService {
 
   public TIME_IN_BLOCK: number = 7;
 
-  constructor() { }
+  constructor(private automaticInput : InputService) { }
 
   public initSimulator(processes: BCP[], cpuMemory: number): FCFSProcess {
     this.newProcesses = processes;
@@ -28,9 +29,22 @@ export class FcfsService {
       globalCounter: 0,
       pauseFlag: false,
       errorFlag: false,
-      interruptFlag: false
+      interruptFlag: false,
+      inputFlag: false
     };
     return this.process;
+  }
+
+  private checkProcesses(value : BehaviorSubject<FCFSProcess>) : void{
+    while (this.memoryUsed < this.cpuMemory && this.newProcesses.length > 0) {
+      const newProcess = this.newProcesses.shift()!;
+      newProcess.startTime = this.process.globalCounter;
+      newProcess.waitTime = 0;
+      this.process.ready.push(newProcess);
+      this.process.newQty = this.newProcesses.length;
+    }
+    this.process.newQty = this.newProcesses.length;
+    value.next(this.process);
   }
 
   public executeSimulator(): Observable<FCFSProcess> {
@@ -41,14 +55,7 @@ export class FcfsService {
       while (this.areProcessesInMemory) {
 
         // Asegurar que siempre que se pueda haya 3 procesos en memoria
-        while (this.memoryUsed < this.cpuMemory && this.newProcesses.length > 0) {
-          const newProcess = this.newProcesses.shift()!;
-          newProcess.startTime = this.process.globalCounter;
-          newProcess.waitTime = 0;
-          this.process.ready.push(newProcess);
-          this.process.newQty = this.newProcesses.length;
-          value.next(this.process);
-        }
+        this.checkProcesses(value);
 
         // Verificar si podemos tener un proceso ejecutándose
         if (this.process.executing == null && this.process.ready.length > 0) {
@@ -63,14 +70,14 @@ export class FcfsService {
           value.next(this.process);
         }
 
-        // Ciclo de reloj, 10 ticks de 100ms
-        for (let i = 0; i < 10; i++) {
+        // Ciclo de reloj, 25 ticks de 40ms
+        for (let i = 0; i < 25; i++) {
           // En caso de estar en pausa
           do {
-            await this.delay(100);
+            await this.delay(40);
           } while (this.process.pauseFlag);
           // Salir si se produce una interrupción
-          if (this.process.errorFlag || this.process.interruptFlag) {
+          if (this.process.errorFlag || this.process.interruptFlag || this.process.inputFlag) {
             break;
           }
         }
@@ -94,6 +101,10 @@ export class FcfsService {
             this.process.blocked.push(this.process.executing!);
           }
           this.process.executing = null;
+        } else if(this.process.inputFlag){    // Interrupción de entrada, no pasa nada pero vuelve a checar 
+          this.checkProcesses(value);
+          this.process.inputFlag = false;
+          continue;
         } else {                                // Ciclo de reloj, terminó naturalmente
           this.process.globalCounter++;
 
@@ -173,5 +184,63 @@ export class FcfsService {
 
   public raiseIOInterrupt(): void {
     this.process.interruptFlag = true;
+  }
+
+  public addRandomProcess() : void{
+    const id = this.getTotalProcessCount();
+    const newProcess : BCP = this.automaticInput.getRandomBCP(id);
+    this.process.inputFlag = true;
+    this.newProcesses.push(newProcess); 
+  }
+
+  private getTotalProcessCount() : number{
+    let count = 0;
+    if(this.process){
+      if(this.process.executing){
+        count += 1;
+      }
+      count += this.process.ready.length + this.process.blocked.length + this.process.finished.length;
+    }
+    return this.newProcesses.length + count;
+  }
+
+  public getBCPS() : BCP[] {
+    let bcps : BCP[] = [];
+    this.process.finished.forEach(p => {
+      bcps.push({
+        ...p,
+        status: 'Finalizado'
+      });
+    });
+    
+    if(this.process.executing){
+      bcps.push({
+        ... this.process.executing,
+        status: 'Finalizado'
+      });
+    }
+    
+    this.process.blocked.forEach(p => {
+      bcps.push({
+        ...p,
+        status: 'Bloqueado'
+      })
+    });
+
+    this.process.ready.forEach(p => {
+      bcps.push({
+        ...p,
+        status: 'Listo'
+      })
+    });
+
+    this.newProcesses.forEach(p => {
+      bcps.push({
+        ...p, 
+        status: 'Nuevo'
+      })
+    });
+
+    return bcps;
   }
 }

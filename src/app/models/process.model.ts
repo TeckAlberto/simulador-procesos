@@ -43,7 +43,8 @@ export interface BCP{
     timeBlocked? : number,
     responseTime? : number,
     returnTime? : number,
-    waitTime? : number
+    waitTime? : number,
+    status? : string
 }
 
 export interface FCFSProcess {
@@ -56,4 +57,5 @@ export interface FCFSProcess {
     pauseFlag : boolean,
     errorFlag : boolean,
     interruptFlag : boolean,
+    inputFlag : boolean,
 }

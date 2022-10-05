@@ -1,7 +1,7 @@
 import { Component, HostListener, OnInit, Type } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { FCFSProcess } from 'src/app/models/process.model';
+import { BCP, FCFSProcess } from 'src/app/models/process.model';
 import { BcpViewerService } from 'src/app/services/bcp-viewer.service';
 import { InputService } from 'src/app/services/input.service';
 import { FcfsService } from 'src/app/services/simulators/fcfs.service';
@@ -18,6 +18,7 @@ export class FcfsContinuacionComponent implements OnInit {
   public paused = false;
   public finished = false;
   public process : FCFSProcess;
+  private modalRef : NgbModalRef | null;
 
   private PROCESS_IN_MEMORY = 3;
 
@@ -70,7 +71,15 @@ export class FcfsContinuacionComponent implements OnInit {
           break;
         case 'b':
         case 'B':
-          this.modal.open(BcpExtendedViewerComponent);
+          this.modalRef = this.modal.open(BcpExtendedViewerComponent);
+          this.modalRef.componentInstance.bcps = [];
+          this.paused = true;
+          this.fcfs.pause();
+          break;
+        case 'n':
+        case 'N':
+          this.toastr.success('Se ha agregado un nuevo proceso', 'Proceso agregado');
+          this.fcfs.addRandomProcess();
           break;
         default:
           break;
@@ -79,6 +88,10 @@ export class FcfsContinuacionComponent implements OnInit {
       this.toastr.info('Ejecución reanudada', 'Interrupción (C)');
       this.paused = false;
       this.fcfs.resume();
+      if(this.modalRef){
+        this.modalRef.dismiss('Closed');
+        this.modalRef = null;
+      }
     }
   }
 
@@ -93,5 +106,5 @@ export class FcfsContinuacionComponent implements OnInit {
   public getMemoryUsed(){
     return this.fcfs.memoryUsed;
   }
-
+  
 }

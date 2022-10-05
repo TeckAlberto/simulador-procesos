@@ -52,7 +52,25 @@ export class InputService {
     return randomProcess;
   }
 
-  public validateOperation(process : Process){
+  public getRandomBCP(id : number) : BCP{
+    let randomProcess : BCP;
+
+    do{
+      const operation = operations[this.randomNumber(0, operations.length - 1)]
+      randomProcess = {
+        programId: id,
+        operator1: this.randomNumber(),
+        operator2: this.randomNumber(),
+        operation: operation.operator,
+        maximumTime: this.randomNumber(6, 16),
+        elapsedTime: 0
+      };
+    }while(!this.validateOperation(randomProcess));
+
+    return randomProcess;
+  }
+
+  public validateOperation(process : Process | BCP){
     const {operator1, operator2, operation} = process;
     return !(
       (operator2 == 0 && (operation == ENUM_OPERATIONS.DIVISION || operation == ENUM_OPERATIONS.RESIDUO)) ||

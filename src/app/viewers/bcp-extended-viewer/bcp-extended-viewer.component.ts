@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { BCP } from 'src/app/models/process.model';
 
 @Component({
   selector: 'app-bcp-extended-viewer',
@@ -7,6 +8,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./bcp-extended-viewer.component.scss']
 })
 export class BcpExtendedViewerComponent implements OnInit {
+
+  @Input() public bcps : BCP[];
 
   constructor(public modal : NgbActiveModal) { }
 
