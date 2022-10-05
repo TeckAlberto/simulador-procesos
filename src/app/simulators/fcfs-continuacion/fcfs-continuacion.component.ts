@@ -71,8 +71,13 @@ export class FcfsContinuacionComponent implements OnInit {
           break;
         case 'b':
         case 'B':
-          this.modalRef = this.modal.open(BcpExtendedViewerComponent);
-          this.modalRef.componentInstance.bcps = [];
+          this.modalRef = this.modal.open(BcpExtendedViewerComponent, { size: 'xl', scrollable: true, centered: true });
+          this.modalRef.componentInstance.bcps = this.fcfs.getBCPS();
+          // this.modalRef.closed.subscribe(reason => {
+          //   this.toastr.info('Ejecución reanudada', 'Interrupción (C)');
+          //   this.paused = false;
+          //   this.fcfs.resume();
+          // });
           this.paused = true;
           this.fcfs.pause();
           break;

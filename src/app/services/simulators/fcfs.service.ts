@@ -216,7 +216,7 @@ export class FcfsService {
     if(this.process.executing){
       bcps.push({
         ... this.process.executing,
-        status: 'Finalizado'
+        status: 'Ejecutando'
       });
     }
     

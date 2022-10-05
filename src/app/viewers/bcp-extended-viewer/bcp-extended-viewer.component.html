@@ -14,7 +14,7 @@
     ></button>
 </div>
 <div class="modal-body">
-    <div class="row">
+    <div class="row text-center">
         <div class="col-md-12">
             <div class="table-responsive">
                 <table
@@ -23,6 +23,7 @@
                 >
                     <thead>
                         <th>ID Programa</th>
+                        <th>Estado</th>
                         <th>Operación</th>
                         <th>Resultado</th>
                         <th>T. Estimado</th>
@@ -30,33 +31,84 @@
                         <th>T. Finalización</th>
                         <th>T. Retorno</th>
                         <th>T. Respuesta</th>
+                        <th>T. Restante</th>
                         <th>T. Espera</th>
                         <th>T. Servicio</th>
                     </thead>
                     <tbody>
                         <tr *ngFor="let bcp of bcps">
                             <td>{{ bcp.programId }}</td>
+
+                            <td>
+                                <ng-containter [ngSwitch]="bcp.status">
+                                    <i class="fas fa-check text-primary" *ngSwitchCase="'Finalizado'"></i>
+                                    <i class="fas fa-play text-success" *ngSwitchCase="'Ejecutando'"></i>
+                                    <i class="fas fa-hourglass-start text-warning" *ngSwitchCase="'Bloqueado'"></i>
+                                    <i class="fas fa-flag text-info text-secondary" *ngSwitchCase="'Listo'"></i>
+                                    <i class="fas fa-plus text-secondary" *ngSwitchCase="'Nuevo'"></i>
+                                    <i class="fas fa-smile-wink" *ngSwitchDefault></i>
+                                </ng-containter>
+                                <br>
+                                {{ bcp.status }}
+                            </td>
+                            
                             <td>
                                 {{ bcp.operator1 }}
-                            {{ bcp.operation }} 
-                            {{ bcp.operator2 }}
+                                {{ bcp.operation }} 
+                                {{ bcp.operator2 }}
                             </td>
 
                             <td *ngIf="bcp.result">{{ bcp.result | number:'1.0-3' }}</td>
-                            <td *ngIf="!bcp.result">
+                            <td *ngIf="!bcp.result && !bcp.finishTime">
+                                -
+                            </td>
+                            <td *ngIf="!bcp.result && bcp.finishTime">
                                 ERROR
                                 <i class="fas fa-exclamation text-danger ml-2"></i>
                             </td>
 
                             <td>{{ bcp.maximumTime }}</td>
-                            <td>{{ bcp.startTime }}</td>
-                            <td>{{ bcp.finishTime }}</td>
-                            <td>{{ bcp.returnTime! }}</td>
+                            
                             <td>
+                                {{ bcp.startTime || bcp.startTime == 0? bcp.startTime : '-' }}
+                            </td>
+                            
+                            <td>
+                                {{ bcp.finishTime || bcp.finishTime == 0? bcp.finishTime : '-' }}
+                            </td>
+                            
+                            <td>
+                                {{ bcp.returnTime! || bcp.returnTime == 0? bcp.returnTime : '-'}}
+                            </td>
+                            
+                            <td *ngIf="bcp.responseTime || bcp.responseTime == 0">
                                 {{ bcp.responseTime! - bcp.startTime! }}
                             </td>
-                            <td>{{ bcp.waitTime! }}</td>
-                            <td>{{ bcp.returnTime! - bcp.waitTime! }}</td>
+                            <td *ngIf="!bcp.responseTime && bcp.responseTime != 0">
+                                -
+                            </td>
+
+                            <td *ngIf="!bcp.finishTime">
+                                {{ bcp.maximumTime - bcp.elapsedTime }}
+                            </td>
+                            <td *ngIf="bcp.finishTime && bcp.result">
+                                0
+                            </td>
+                            <td *ngIf="bcp.finishTime && !bcp.result">
+                                ERROR ({{ bcp.maximumTime - bcp.elapsedTime }})
+                            </td>
+                            
+                            <td>
+                                {{ bcp.waitTime || bcp.waitTime == 0!? bcp.waitTime : '-' }}
+                            </td>
+
+                            
+                            <td *ngIf="bcp.returnTime">
+                                {{ bcp.returnTime! - bcp.waitTime! }}
+                            </td>
+                            <td *ngIf="!bcp.returnTime">
+                                -
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -66,10 +118,11 @@
     </div>
 </div>
 <div class="modal-footer">
-    <button
+    <!-- <button
         type="button"
         class="btn btn-outline-primary"
         (click)="modal.dismiss('cancel click')">
         Continuar
-    </button>
+    </button> -->
+    Presione "C" para continuar
 </div>
