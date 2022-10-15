@@ -49,12 +49,11 @@ export class QuantumInputComponent implements OnInit {
 
     const quantity = Number(this.getControl('processesQty').value);
     const quantum = Number(this.getControl('quantum').value);
-    this.input.addRandomProcesses(quantity); 
+    this.input.addRandomProcesses(quantity, quantum); 
     this.execute();
   }
 
   public execute(){
-    // this.toastr.info('Ejecutando procesos', 'Ejecución iniciada');
     console.log(this.input.getProcesses());
     this.router.navigate(this.input.nextRoute());
   }

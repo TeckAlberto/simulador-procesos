@@ -18,6 +18,7 @@ import { FcfsContinuacionComponent } from './simulators/fcfs-continuacion/fcfs-c
 import { NgbActiveModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BcpExtendedViewerComponent } from './viewers/bcp-extended-viewer/bcp-extended-viewer.component';
 import { QuantumInputComponent } from './input/quantum-input/quantum-input.component';
+import { RoundRobinComponent } from './simulators/round-robin/round-robin.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { QuantumInputComponent } from './input/quantum-input/quantum-input.compo
     FcfsContinuacionComponent,
     BcpExtendedViewerComponent,
     QuantumInputComponent,
+    RoundRobinComponent,
   ],
   imports: [
     BrowserModule,

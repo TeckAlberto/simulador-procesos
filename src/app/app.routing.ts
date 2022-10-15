@@ -12,6 +12,7 @@ import { FcfsComponent } from "./simulators/fcfs/fcfs.component";
 import { MultiprogrammingComponent } from "./simulators/multiprogramming/multiprogramming.component";
 import { QuantumInputComponent } from "./input/quantum-input/quantum-input.component";
 import { EmptyQuantumGuard } from "./guards/empty-quantum.guard";
+import { RoundRobinComponent } from "./simulators/round-robin/round-robin.component";
 
 export const AppRoutes : Route[] = [
     {
@@ -36,10 +37,9 @@ export const AppRoutes : Route[] = [
             {
                 path: 'quantum-input',
                 component: QuantumInputComponent,
-                canActivate: [ EmptyQuantumGuard ],
                 data: {
                     title: 'Ingresar procesos y quantum',
-                    redirect: ['input']
+                    redirect: ['round-robin']
                 }
             },
             {
@@ -72,6 +72,14 @@ export const AppRoutes : Route[] = [
                 canActivate: [ EmptyAutomaticInputGuard ],
                 data: {
                     title: 'First Come First Served II'
+                }
+            },
+            {
+                path: 'round-robin',
+                component: RoundRobinComponent,
+                canActivate: [ EmptyQuantumGuard ],
+                data: {
+                    title: 'Round Robin'
                 }
             },
             {
