@@ -17,6 +17,7 @@ import { BcpViewerComponent } from './viewers/bcp-viewer/bcp-viewer.component';
 import { FcfsContinuacionComponent } from './simulators/fcfs-continuacion/fcfs-continuacion.component';
 import { NgbActiveModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BcpExtendedViewerComponent } from './viewers/bcp-extended-viewer/bcp-extended-viewer.component';
+import { QuantumInputComponent } from './input/quantum-input/quantum-input.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { BcpExtendedViewerComponent } from './viewers/bcp-extended-viewer/bcp-ex
     BcpViewerComponent,
     FcfsContinuacionComponent,
     BcpExtendedViewerComponent,
+    QuantumInputComponent,
   ],
   imports: [
     BrowserModule,

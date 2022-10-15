@@ -9,6 +9,7 @@ import { ENUM_OPERATIONS, operations } from '../resources/operation.list';
 export class InputService {
 
   private processes: Process[];
+  private quantum : number;
 
   constructor(private route : ActivatedRoute) {
     this.processes = [];
@@ -26,10 +27,11 @@ export class InputService {
     return this.processes;
   }
   
-  public addRandomProcesses(count : number){
+  public addRandomProcesses(count : number, quantum : number = 0){
       for(let i = 0; i < count; i++){
         this.processes.push(this.getRandomProcess());
       }
+      this.quantum = quantum;
   }
 
   public getRandomProcess(){
@@ -108,5 +110,9 @@ export class InputService {
         result: p.result
       }
     });
+  }
+
+  public getQuantum() : number{
+    return this.quantum;
   }
 }

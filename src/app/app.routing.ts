@@ -10,6 +10,8 @@ import { BatchProcessingComponent } from "./simulators/batch-processing/batch-pr
 import { FcfsContinuacionComponent } from "./simulators/fcfs-continuacion/fcfs-continuacion.component";
 import { FcfsComponent } from "./simulators/fcfs/fcfs.component";
 import { MultiprogrammingComponent } from "./simulators/multiprogramming/multiprogramming.component";
+import { QuantumInputComponent } from "./input/quantum-input/quantum-input.component";
+import { EmptyQuantumGuard } from "./guards/empty-quantum.guard";
 
 export const AppRoutes : Route[] = [
     {
@@ -29,6 +31,15 @@ export const AppRoutes : Route[] = [
                 data: {
                     title: 'Ingresar cantidad de procesos',
                     redirect: ['fcfs-2']
+                }
+            },
+            {
+                path: 'quantum-input',
+                component: QuantumInputComponent,
+                canActivate: [ EmptyQuantumGuard ],
+                data: {
+                    title: 'Ingresar procesos y quantum',
+                    redirect: ['input']
                 }
             },
             {
@@ -74,7 +85,7 @@ export const AppRoutes : Route[] = [
             {
                 path: '',
                 pathMatch: 'full',
-                redirectTo: 'input'
+                redirectTo: 'quantum-input'
             }
         ]
     }
