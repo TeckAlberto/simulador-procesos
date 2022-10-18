@@ -55,13 +55,13 @@
                             </td>
 
 
-                            <td *ngIf="bcp.result">
+                            <td *ngIf="isValid(bcp.result)">
                                 {{ bcp.result | number:'1.0-3' }}
                             </td>
-                            <td *ngIf="!bcp.result && !bcp.finishTime">
+                            <td *ngIf="!isValid(bcp.result) && !isValid(bcp.finishTime)">
                                 -
                             </td>
-                            <td *ngIf="!bcp.result && bcp.finishTime">
+                            <td *ngIf="!isValid(bcp.result) && isValid(bcp.finishTime)">
                                 ERROR
                                 <i class="fas fa-exclamation text-danger ml-2"></i>
                             </td>

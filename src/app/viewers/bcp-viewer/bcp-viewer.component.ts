@@ -17,4 +17,7 @@ export class BcpViewerComponent implements OnInit {
     this.bcps = this.bcp.getBCPs();
   }
 
+  public isValid(value : number | undefined) : boolean{
+    return typeof value !== 'undefined';
+  }
 }

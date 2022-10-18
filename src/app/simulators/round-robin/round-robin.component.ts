@@ -109,4 +109,7 @@ export class RoundRobinComponent implements OnInit {
     return this.rr.QUANTUM;
   }
 
+  public isValid(value : number | undefined){
+    return typeof value !== 'undefined';
+  }
 }

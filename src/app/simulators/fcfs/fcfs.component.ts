@@ -86,4 +86,8 @@ export class FcfsComponent implements OnInit {
   public getMemoryUsed(){
     return this.fcfs.memoryUsed;
   }
+
+  public isValid(value : number | undefined) : boolean{
+    return typeof value !== 'undefined';
+  }
 }

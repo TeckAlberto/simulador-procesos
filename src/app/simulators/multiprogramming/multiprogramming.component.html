@@ -119,10 +119,10 @@
                                         {{ job.operator2 }}
                                     </td>
                                     
-                                    <td *ngIf="job.result">
+                                    <td *ngIf="isValid(job.result)">
                                         {{ job.result | number:'1.0-3' }} 
                                     </td>
-                                    <td *ngIf="!job.result">
+                                    <td *ngIf="!isValid(job.result)">
                                         ERROR
                                         <i class="fas fa-exclamation text-danger ml-2"></i>
                                     </td>

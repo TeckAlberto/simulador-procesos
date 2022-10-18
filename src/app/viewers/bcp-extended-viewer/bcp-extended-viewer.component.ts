@@ -18,7 +18,7 @@ export class BcpExtendedViewerComponent implements OnInit {
   }
 
   public isValid(value : number | undefined){
-    return value || value == 0;
+    return typeof value !== 'undefined';
   }
 
   public getIcon(status : string) : string{

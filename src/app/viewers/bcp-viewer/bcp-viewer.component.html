@@ -26,10 +26,10 @@
                                 {{ bcp.operator2 }}
                             </td>
                             
-                            <td *ngIf="bcp.result">
+                            <td *ngIf="isValid(bcp.result)">
                                 {{ bcp.result | number:'1.0-3' }} 
                             </td>
-                            <td *ngIf="!bcp.result">
+                            <td *ngIf="!isValid(bcp.result)">
                                 ERROR
                                 <i class="fas fa-exclamation text-danger ml-2"></i>
                             </td>

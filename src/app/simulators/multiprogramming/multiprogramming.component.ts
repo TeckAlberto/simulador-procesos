@@ -76,4 +76,8 @@ export class MultiprogrammingComponent implements OnInit {
     return i % this.BATCH_SIZE === 0 ? length % this.BATCH_SIZE : 0;
   }
 
+  public isValid(value : number | undefined) : boolean{
+    return typeof value !== 'undefined';
+  }
+
 }
