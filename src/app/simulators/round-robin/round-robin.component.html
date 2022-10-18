@@ -22,6 +22,10 @@
                     <h5 class="font-weight-bold">
                         Quantum:
                         {{ getQuantum() }} 
+                        <i class="ml-1 fas fa-recycle" 
+                            [ngClass]="{'show-quantum' : process.contextChangeFlag, 
+                            'hide-quantum' : !process.contextChangeFlag}">
+                        </i>
                     </h5>
                 </div>
                 <div class="col-md-3">
@@ -45,8 +49,8 @@
                             <thead>
                                 <th>ID Programa</th>
                                 <th>Tiempo máximo</th>
-                                <!-- <th>Tiempo transcurrido</th> -->
-                                <th>Tiempo restante</th>
+                                <th>Tiempo transcurrido</th>
+                                <!-- <th>Tiempo restante</th> -->
                             </thead>
                             <tbody>
                                 <tr *ngFor="let job of process.ready; let i = index">
@@ -55,8 +59,8 @@
                                         {{ job.programId }}
                                     </td>
                                     <td> {{ job.maximumTime }} </td>
-                                    <!-- <td> {{ job.elapsedTime }} </td> -->
-                                    <td> {{ job.maximumTime - job.elapsedTime }} </td>
+                                    <td> {{ job.elapsedTime }} </td>
+                                    <!-- <td> {{ job.maximumTime - job.elapsedTime }} </td> -->
                                 </tr>
                             </tbody>
                         </table>
@@ -121,6 +125,10 @@
                                     <tr>
                                         <td>Tiempo restante</td>
                                         <td>{{ process.executing.maximumTime - process.executing.elapsedTime }} </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Quantum</td>
+                                        <td>{{ process.executing.currentQuantum }} / {{ getQuantum() }}</td>
                                     </tr>
                                 </ng-container>
                                 <ng-template #null_process>

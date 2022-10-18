@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { BCP, FCFSProcess } from 'src/app/models/process.model';
+import { BCP, FCFSProcess, RRProcess } from 'src/app/models/process.model';
 import { defaultOperation, functionOperations, Operation } from 'src/app/resources/operation.list';
 import { InputService } from '../input.service';
 
@@ -9,7 +9,7 @@ import { InputService } from '../input.service';
 })
 export class RoundRobinService {
   private newProcesses: BCP[];
-  private process: FCFSProcess;
+  private process: RRProcess;
   private cpuMemory: number;
 
   public TIME_IN_BLOCK: number = 7;
@@ -17,7 +17,7 @@ export class RoundRobinService {
 
   constructor(private automaticInput : InputService) { }
 
-  public initSimulator(processes: BCP[], cpuMemory: number, quantum : number): FCFSProcess {
+  public initSimulator(processes: BCP[], cpuMemory: number, quantum : number): RRProcess {
     this.newProcesses = processes;
     this.cpuMemory = cpuMemory;
     this.QUANTUM = quantum;
@@ -31,12 +31,13 @@ export class RoundRobinService {
       pauseFlag: false,
       errorFlag: false,
       interruptFlag: false,
-      inputFlag: false
+      inputFlag: false,
+      contextChangeFlag: false
     };
     return this.process;
   }
 
-  private checkProcesses(value : BehaviorSubject<FCFSProcess>) : void{
+  private checkProcesses(value : BehaviorSubject<RRProcess>) : void{
     while (this.memoryUsed < this.cpuMemory && this.newProcesses.length > 0) {
       const newProcess = this.newProcesses.shift()!;
       newProcess.startTime = this.process.globalCounter;
@@ -48,8 +49,8 @@ export class RoundRobinService {
     value.next(this.process);
   }
 
-  public executeSimulator(): Observable<FCFSProcess> {
-    const value = new BehaviorSubject<FCFSProcess>(this.process);
+  public executeSimulator(): Observable<RRProcess> {
+    const value = new BehaviorSubject<RRProcess>(this.process);
     const observable = value.asObservable();
 
     const observer = async () => {
@@ -58,9 +59,23 @@ export class RoundRobinService {
         // Asegurar que siempre que se pueda haya 3 procesos en memoria
         this.checkProcesses(value);
 
+        // Verificar si el quantum terminó
+        if(this.process.executing && (this.process.executing.currentQuantum === this.QUANTUM)){
+          this.process.ready.push(this.process.executing);
+          this.process.executing = null;
+          this.process.contextChangeFlag = true;
+          
+          setTimeout(() => {
+            this.process.contextChangeFlag = false;
+            value.next(this.process);
+          }, 250);
+
+        }
+
         // Verificar si podemos tener un proceso ejecutándose
         if (this.process.executing == null && this.process.ready.length > 0) {
           this.process.executing = this.process.ready.shift()!;
+          this.process.executing.currentQuantum = 0;
           
           // Calculamos su tiempo de respuesta
           if (typeof this.process.executing.responseTime == 'undefined') {
@@ -102,35 +117,40 @@ export class RoundRobinService {
             this.process.blocked.push(this.process.executing!);
           }
           this.process.executing = null;
+
         } else if(this.process.inputFlag){    // Interrupción de entrada, no pasa nada pero vuelve a checar 
           this.checkProcesses(value);
           this.process.inputFlag = false;
           continue;
+
         } else {                                // Ciclo de reloj, terminó naturalmente
           this.process.globalCounter++;
 
           if (this.process.executing != null) { // Si no es proceso nulo
-            this.process.executing!.elapsedTime += 1;
+            this.process.executing.elapsedTime++;
+            this.process.executing.currentQuantum!++;
 
             if (this.process.executing!.elapsedTime == this.process.executing!.maximumTime) {  //Si se acabó
-              const { operator1, operation, operator2 } = this.process.executing!;
+              const { operator1, operation, operator2 } = this.process.executing;
               const f: Operation = functionOperations.get(operation) ?? defaultOperation;
+              
               this.process.executing!.result = f(operator1, operator2);
               this.process.executing!.finishTime = this.process.globalCounter;
               this.process.executing!.returnTime = this.process.executing!.finishTime - this.process.executing.startTime!;
 
-              this.process.finished.push(this.process.executing!);
+              this.process.finished.push(this.process.executing);
               this.process.executing = null;
             }
+
           }
 
           // Sumar 1 de tiempo de espera a los procesos listos
-          this.process.ready.forEach(r => r.waitTime!+=1 );
+          this.process.ready.forEach(r => r.waitTime!++ );
 
           // Actualizar procesos bloqueados
           this.process.blocked = this.process.blocked.filter(b => {
-            b.timeBlocked! += 1;
-            b.waitTime! += 1;
+            b.timeBlocked!++;
+            b.waitTime!++;
             if (b.timeBlocked == this.TIME_IN_BLOCK) {
               this.process.ready.push(b);
               return false;
@@ -138,6 +158,8 @@ export class RoundRobinService {
             
             return true;
           });
+
+
 
         }
         value.next(this.process);
@@ -153,7 +175,7 @@ export class RoundRobinService {
   public get memoryUsed(): number {
     let count = 0;
     if (this.process.executing != null) {
-      count += 1;
+      count++;
     }
     count += this.process.blocked.length;
     count += this.process.ready.length;
@@ -198,7 +220,7 @@ export class RoundRobinService {
     let count = 0;
     if(this.process){
       if(this.process.executing){
-        count += 1;
+        count++;
       }
       count += this.process.ready.length + this.process.blocked.length + this.process.finished.length;
     }

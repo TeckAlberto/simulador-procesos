@@ -44,7 +44,8 @@ export interface BCP{
     responseTime? : number,
     returnTime? : number,
     waitTime? : number,
-    status? : string
+    status? : string,
+    currentQuantum? : number
 }
 
 export interface FCFSProcess {
@@ -58,4 +59,19 @@ export interface FCFSProcess {
     errorFlag : boolean,
     interruptFlag : boolean,
     inputFlag : boolean,
+}
+
+
+export interface RRProcess {
+    newQty : number,
+    globalCounter : number,
+    ready : BCP[],
+    executing : BCP | null,
+    blocked: BCP[],
+    finished : BCP[],
+    pauseFlag : boolean,
+    errorFlag : boolean,
+    interruptFlag : boolean,
+    inputFlag : boolean,
+    contextChangeFlag : boolean
 }

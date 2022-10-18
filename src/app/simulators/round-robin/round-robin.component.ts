@@ -1,7 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { FCFSProcess } from 'src/app/models/process.model';
+import { RRProcess } from 'src/app/models/process.model';
 import { InputService } from 'src/app/services/input.service';
 import { RoundRobinService } from 'src/app/services/simulators/round-robin.service';
 import { BcpExtendedViewerComponent } from 'src/app/viewers/bcp-extended-viewer/bcp-extended-viewer.component';
@@ -16,7 +16,7 @@ export class RoundRobinComponent implements OnInit {
   public started = false;
   public paused = false;
   public finished = false;
-  public process : FCFSProcess;
+  public process : RRProcess;
   private modalRef : NgbModalRef | null;
 
   private PROCESS_IN_MEMORY = 3;
