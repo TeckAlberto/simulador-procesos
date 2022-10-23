@@ -51,7 +51,7 @@ export class FcfsContinuacionComponent implements OnInit {
   @HostListener('document:keypress', ['$event'])
   private handleKeyboardEvent(event: KeyboardEvent) {
     console.log('Tecla: ' + event.key);
-    if(!this.paused){
+    if(!this.paused && !this.finished){
       switch(event.key){
         case 'e':
         case 'E':
