@@ -19,7 +19,8 @@ import { NgbActiveModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BcpExtendedViewerComponent } from './viewers/bcp-extended-viewer/bcp-extended-viewer.component';
 import { QuantumInputComponent } from './input/quantum-input/quantum-input.component';
 import { RoundRobinComponent } from './simulators/round-robin/round-robin.component';
-import { ProducerConsumerComponent } from './producer-consumer/producer-consumer.component';
+import { CreditsComponent } from './extras/credits/credits.component';
+import { ProducerConsumerComponent } from './extras/producer-consumer/producer-consumer.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { ProducerConsumerComponent } from './producer-consumer/producer-consumer
     QuantumInputComponent,
     RoundRobinComponent,
     ProducerConsumerComponent,
+    CreditsComponent,
   ],
   imports: [
     BrowserModule,

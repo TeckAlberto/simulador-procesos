@@ -13,6 +13,8 @@ import { MultiprogrammingComponent } from "./simulators/multiprogramming/multipr
 import { QuantumInputComponent } from "./input/quantum-input/quantum-input.component";
 import { EmptyQuantumGuard } from "./guards/empty-quantum.guard";
 import { RoundRobinComponent } from "./simulators/round-robin/round-robin.component";
+import { ProducerConsumerComponent } from "./extras/producer-consumer/producer-consumer.component";
+import { CreditsComponent } from "./extras/credits/credits.component";
 
 export const AppRoutes : Route[] = [
     {
@@ -88,6 +90,20 @@ export const AppRoutes : Route[] = [
                 canActivate: [ BcpGuard ],
                 data: {
                     title: 'Ver BCPs'
+                }
+            },
+            {
+                path: 'producer-consumer',
+                component: ProducerConsumerComponent,
+                data: {
+                    title: 'Productor - Consumidor'
+                }
+            },
+            {
+                path: 'credits',
+                component: CreditsComponent,
+                data: {
+                    title: 'Créditos'
                 }
             },
             {

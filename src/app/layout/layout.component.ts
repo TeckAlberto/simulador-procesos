@@ -12,6 +12,7 @@ export class LayoutComponent implements OnInit {
 
   public appTitle: string = '';
   public title: BehaviorSubject<string>;
+  private clickCount = 0;
 
   constructor(private titleService: Title,
               private router        : Router,
@@ -36,6 +37,15 @@ export class LayoutComponent implements OnInit {
           ` ${customTitle} | Simulador de procesos` : 'Simulador de procesos';
       })
     ).subscribe((newTitle: string) => this.appTitle = newTitle);
+  }
+
+  public credits(){
+    console.log('Click');
+    this.clickCount++;
+    if(this.clickCount >= 3){
+      this.router.navigate(['credits']);
+      this.clickCount = 0;
+    }
   }
 
 }
