@@ -9,24 +9,26 @@ import { ProducerConsumerService } from 'src/app/services/simulators/producer-co
   styleUrls: ['./producer-consumer.component.scss']
 })
 export class ProducerConsumerComponent implements OnInit {
-  numbers = Array(25).fill(0).map((x,i)=>i);
   public process : PCProblem;
+  private BUFFER_SIZE = 25;
+  private MIN_WORK = 2;
+  private MAX_WORK = 5;
   
   constructor(private router  : Router,
               private pc      : ProducerConsumerService) { }
   
   ngOnInit(): void {
-    this.process = this.pc.init();
+    this.process = this.pc.init(this.BUFFER_SIZE, this.MIN_WORK, this.MAX_WORK);
     this.pc.executeSimulator().subscribe({
       next: (value) => {
         this.process = value;
-        console.log(value);
       }
     });
   }
 
   @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
     if(event.key == 'Escape'){
+      this.pc.stop();
       this.router.navigate(['credits']);
     }
   }

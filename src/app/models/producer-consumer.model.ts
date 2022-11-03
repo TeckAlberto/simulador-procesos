@@ -1,7 +1,7 @@
 export interface Subject{
-    role : string,
     working: boolean
     idx : number,
+    count: 0
 }
 
 export interface PCProblem{

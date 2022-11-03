@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { PCProblem } from 'src/app/models/producer-consumer.model';
 
@@ -7,26 +8,34 @@ import { PCProblem } from 'src/app/models/producer-consumer.model';
 })
 export class ProducerConsumerService {
 
+  private running = true;
   private process : PCProblem;
   private value : BehaviorSubject<PCProblem>;
+  private bufferSize : number;
+  private minWork : number;
+  private maxWork : number;
   
-  constructor() { }
+  constructor(private toastr  : ToastrService) { }
 
-  public init() : PCProblem{
+  public init(bufferSize : number, minWork : number, maxWork: number) : PCProblem{
+    this.bufferSize = bufferSize;
+    this.minWork = minWork;
+    this.maxWork = maxWork;
+
     this.process = {
       consumer: {
-        role: 'Consumidor',
         working: false,
-        idx: 0
+        idx: 0,
+        count: 0
       },
       producer: {
-        role: 'Productor',
         working: false,
-        idx: 0
+        idx: 0,
+        count: 0
       },
       turn: null,
       turnStatus: '',
-      buffer: new Array(25).fill(false),
+      buffer: new Array(this.bufferSize).fill(false),
       workBufferSize: 0
     }
     return this.process;
@@ -37,18 +46,48 @@ export class ProducerConsumerService {
     const observable = this.value.asObservable();
 
     const observer = async () => {
-      while(true){
-        await this.roulette();
-        this.process.workBufferSize = this.randomNumber(2, 5);
+      while(this.running){
+        await this.roulette();    // Get random turn and workSize
         this.update();
+
         if(this.process.turn){  //Producer's turn
+          this.process.producer.count = 0;
+
+          for(let i = 0; i < this.process.workBufferSize; i++){
+            
+            if(this.process.buffer[this.process.producer.idx]){
+              this.toastr.warning('No se puede producir elemento', 'Buffer lleno');
+              break;
+            }else{
+              this.process.buffer[this.process.producer.idx] = true;
+              let count = this.process.producer.idx;
+              this.process.producer.idx = (count == this.bufferSize - 1)? 0 : ++count;
+              this.process.producer.count++;
+            }
+            this.update();
+            await this.delay(700);
+          }
+          this.update();
 
         }else{                  //Consumer's turn
-
+          this.process.consumer.count = 0;
+          for(let i = 0; i<this.process.workBufferSize; i++){
+            
+            if(!this.process.buffer[this.process.consumer.idx]){
+              this.toastr.warning('No se puede consumir elemento', 'Buffer vacío');
+              break;
+            }else{
+              this.process.buffer[this.process.consumer.idx] = false;
+              let count = this.process.consumer.idx;
+              this.process.consumer.idx = (count == this.bufferSize - 1)? 0 : ++count;
+              this.process.consumer.count++;
+            }
+            this.update();
+            await this.delay(700);
+          }
+          this.update();
         }
-        // await this.delay(5000);
       }
-      // value.complete();
     }
 
     observer();
@@ -56,16 +95,17 @@ export class ProducerConsumerService {
   }
 
   private async roulette(){
-    this.process.turnStatus = 'Seleccionando turno...';
+    this.process.turnStatus = 'Seleccionando turno y cantidad...';
     this.process.producer.working = false;
     this.process.consumer.working = false;
     this.update();
 
     let turn = this.process.turn || false;
-    const expectedValue : boolean = Math.random() < 0.5;
+    const expectedValue : boolean = Math.random() <= 0.55;
 
     for(let i = 4; i <= 20; i++){
       this.process.turn = turn;
+      this.process.workBufferSize = this.randomNumber(this.minWork, this.maxWork);
       this.update();
       await this.delay(Math.pow(i, 2));
       turn = !turn;
@@ -90,5 +130,9 @@ export class ProducerConsumerService {
 
   public randomNumber(min : number = -255, max : number = 254){
     return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
+  public stop(){
+    this.running = false;
   }
 }

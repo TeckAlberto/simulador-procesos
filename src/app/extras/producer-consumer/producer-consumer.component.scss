@@ -1,7 +1,25 @@
 .table-borders table,
 th,
 td {
-    border: 1.5px solid rgb(46, 46, 46) !important;
+    border: 1.5px solid rgb(46, 46, 46);
+}
+
+span.producer-cell{
+    // color: rgb(171, 0, 0);
+    font-weight: bold;
+}
+
+span.consumer-cell{
+    // color: rgb(31, 116, 0);
+    font-weight: bold;
+}
+
+td.producer-cell{
+    border: 3px dashed rgb(171, 0, 0) !important;
+}
+
+td.consumer-cell{
+    border: 3px dashed rgb(31, 116, 0) !important;
 }
 
 .img-asset {
