@@ -109,7 +109,7 @@ export const AppRoutes : Route[] = [
             {
                 path: '',
                 pathMatch: 'full',
-                redirectTo: 'quantum-input'
+                redirectTo: 'producer-consumer'
             }
         ]
     }
