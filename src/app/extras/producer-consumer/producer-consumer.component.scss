@@ -1,0 +1,17 @@
+.table-borders table,
+th,
+td {
+    border: 1.5px solid rgb(46, 46, 46) !important;
+}
+
+.img-asset {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    width: 230px;
+    height: 230px;
+}
+
+.work-asset{
+    font-size: 2vw;
+}

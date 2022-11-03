@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 export class ProducerConsumerComponent implements OnInit {
 
   constructor(private router : Router) { }
-
+  numbers = Array(25).fill(0).map((x,i)=>i);
   ngOnInit(): void {
   }
 
