@@ -10,8 +10,11 @@
                         <img src="/assets/img/producer.jpg" 
                             class="img-asset" alt="Michael Scott">
                     </div>
-                    <div class="col-md-7">
-                        holaaaa
+                    <div class="col-md-7 text-center">
+                        <span class="badge badge-primary" *ngIf="process.producer.working"> Trabajando </span>
+                        <span class="badge badge-secondary" *ngIf="!process.producer.working"> Durmiendo </span>
+                        <br>
+
                     </div>
                 </div>
             </fieldset>
@@ -19,7 +22,12 @@
         <div class="col-md-4">
             <fieldset class="scheduler-border">
                 <legend class="scheduler-border">Estado actual</legend>
-                <div>
+                <div class="text-center">
+                    <i [ngClass]="{'' : process.turn == null, 'fa-caret-left' : process.turn == true, 'fa-caret-right' : process.turn == false}"
+                        class="fas turn-icon"></i>
+                    <h5> {{ process.turnStatus }} </h5>
+
+                    {{ process.workBufferSize }}
                 </div>
             </fieldset>
         </div>
@@ -31,8 +39,10 @@
                         <img src="/assets/img/consumer.webp" 
                             class="img-asset" alt="Dwight Schrute">
                     </div>
-                    <div class="col-md-7">
-
+                    <div class="col-md-7 text-center">
+                        <span class="badge badge-primary" *ngIf="process.consumer.working"> Trabajando </span>
+                        <span class="badge badge-secondary" *ngIf="!process.consumer.working"> Durmiendo </span>
+                        <br>
                     </div>
                 </div>
             </fieldset>
