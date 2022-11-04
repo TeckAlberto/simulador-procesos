@@ -7,7 +7,7 @@ export interface Subject{
 export interface PCProblem{
     producer : Subject,
     consumer: Subject,
-    turn: boolean | null,
+    turn: boolean,
     turnStatus : string,
     buffer: boolean[],
     workBufferSize : number,

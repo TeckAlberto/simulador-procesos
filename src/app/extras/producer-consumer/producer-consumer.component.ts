@@ -13,12 +13,17 @@ export class ProducerConsumerComponent implements OnInit {
   private BUFFER_SIZE = 25;
   private MIN_WORK = 2;
   private MAX_WORK = 5;
+  public started = false;
   
   constructor(private router  : Router,
               private pc      : ProducerConsumerService) { }
   
   ngOnInit(): void {
     this.process = this.pc.init(this.BUFFER_SIZE, this.MIN_WORK, this.MAX_WORK);
+  }
+
+  public start(){
+    this.started = true;
     this.pc.executeSimulator().subscribe({
       next: (value) => {
         this.process = value;
@@ -29,6 +34,7 @@ export class ProducerConsumerComponent implements OnInit {
   @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
     if(event.key == 'Escape'){
       this.pc.stop();
+      this.started = false
       this.router.navigate(['credits']);
     }
   }

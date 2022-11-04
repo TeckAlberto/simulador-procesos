@@ -15,11 +15,11 @@ span.consumer-cell{
 }
 
 td.producer-cell{
-    border: 3px dashed rgb(171, 0, 0) !important;
+    border: 3px dashed rgb(139, 66, 151) !important;
 }
 
 td.consumer-cell{
-    border: 3px dashed rgb(31, 116, 0) !important;
+    border: 3px dashed rgb(172, 185, 56) !important;
 }
 
 .img-asset {
@@ -28,6 +28,7 @@ td.consumer-cell{
     object-fit: cover;
     width: 230px;
     height: 230px;
+    border-radius: 5px;
 }
 
 .work-asset{
@@ -40,4 +41,13 @@ td.consumer-cell{
 
 .badge{
     font-size: 100%;
+}
+
+.buffer-pos{
+    font-size: 80%;
+    color: rgb(52, 52, 52);
+}
+
+.cell{
+    padding-top: 2.5px;
 }

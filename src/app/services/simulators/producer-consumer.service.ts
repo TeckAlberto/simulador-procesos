@@ -33,7 +33,7 @@ export class ProducerConsumerService {
         idx: 0,
         count: 0
       },
-      turn: null,
+      turn: false,
       turnStatus: '',
       buffer: new Array(this.bufferSize).fill(false),
       workBufferSize: 0
@@ -56,37 +56,38 @@ export class ProducerConsumerService {
           for(let i = 0; i < this.process.workBufferSize; i++){
             
             if(this.process.buffer[this.process.producer.idx]){
-              this.toastr.warning('No se puede producir elemento', 'Buffer lleno');
+              this.toastr.warning('No se puede ingresar al buffer', 'Buffer lleno');
               break;
-            }else{
-              this.process.buffer[this.process.producer.idx] = true;
-              let count = this.process.producer.idx;
-              this.process.producer.idx = (count == this.bufferSize - 1)? 0 : ++count;
-              this.process.producer.count++;
             }
-            this.update();
-            await this.delay(700);
-          }
-          this.update();
 
+            this.process.buffer[this.process.producer.idx] = true;
+            let count = this.process.producer.idx;
+            this.process.producer.idx = (count == this.bufferSize - 1)? 0 : ++count;
+            this.process.producer.count++;
+            
+            this.update();
+            await this.delay(750);
+          }
         }else{                  //Consumer's turn
           this.process.consumer.count = 0;
+
           for(let i = 0; i<this.process.workBufferSize; i++){
             
             if(!this.process.buffer[this.process.consumer.idx]){
-              this.toastr.warning('No se puede consumir elemento', 'Buffer vacío');
+              this.toastr.warning('No se puede ingresar al buffer', 'Buffer vacío');
               break;
-            }else{
-              this.process.buffer[this.process.consumer.idx] = false;
-              let count = this.process.consumer.idx;
-              this.process.consumer.idx = (count == this.bufferSize - 1)? 0 : ++count;
-              this.process.consumer.count++;
             }
+            this.process.buffer[this.process.consumer.idx] = false;
+            let count = this.process.consumer.idx;
+            this.process.consumer.idx = (count == this.bufferSize - 1)? 0 : ++count;
+            this.process.consumer.count++;
+
             this.update();
-            await this.delay(700);
+            await this.delay(750);
           }
-          this.update();
         }
+        this.update();
+        await this.delay(250);
       }
     }
 
@@ -100,7 +101,7 @@ export class ProducerConsumerService {
     this.process.consumer.working = false;
     this.update();
 
-    let turn = this.process.turn || false;
+    let turn = this.process.turn;
     const expectedValue : boolean = Math.random() <= 0.55;
 
     for(let i = 4; i <= 20; i++){
@@ -110,11 +111,11 @@ export class ProducerConsumerService {
       await this.delay(Math.pow(i, 2));
       turn = !turn;
     }
-
+    
+    this.process.turn = expectedValue;
     this.process.producer.working = expectedValue;
     this.process.consumer.working = !expectedValue;
     this.process.turnStatus = 'Turno del ' + (expectedValue? 'productor' : 'consumidor');
-    this.process.turn = expectedValue;
     this.update();
   }
 
