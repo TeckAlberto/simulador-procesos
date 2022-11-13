@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { BCP, SimplePagingProcess } from 'src/app/models/process.model';
+import { BCP, BCPMemory, MemoryFrame, SimplePagingProcess } from 'src/app/models/process.model';
+import { MEM_ASSIGN, MEM_STATUS } from 'src/app/resources/memory.numbers.status';
 import { defaultOperation, functionOperations, Operation } from 'src/app/resources/operation.list';
 import { InputService } from '../input.service';
 
@@ -8,18 +9,22 @@ import { InputService } from '../input.service';
   providedIn: 'root'
 })
 export class SimplePagingService {
-  private newProcesses: BCP[];
+  private newProcesses: BCPMemory[];
   private process: SimplePagingProcess;
-  private cpuMemory: number;
 
   public TIME_IN_BLOCK: number = 7;
+  private SO_MEMORY_SIZE: number = 4;
   public QUANTUM : number;
+  private FRAME_COUNT: number;
+  private FRAME_SIZE: number;
 
   constructor(private automaticInput : InputService) { }
 
-  public initSimulator(processes: BCP[], cpuMemory: number, quantum : number): SimplePagingProcess {
+  public initSimulator(processes: BCPMemory[], quantum : number, frameSize : number, frameCount : number): SimplePagingProcess {
     this.newProcesses = processes;
-    this.cpuMemory = cpuMemory;
+    this.FRAME_COUNT = frameCount;
+    this.FRAME_SIZE = frameSize;
+
     this.QUANTUM = quantum;
     this.process = {
       newQty: 0,
@@ -32,13 +37,15 @@ export class SimplePagingService {
       errorFlag: false,
       interruptFlag: false,
       inputFlag: false,
-      contextChangeFlag: false
+      contextChangeFlag: false,
+      memory: this.generateMemoryMap()
     };
     return this.process;
   }
 
   private checkProcesses(value : BehaviorSubject<SimplePagingProcess>) : void{
-    while (this.memoryUsed < this.cpuMemory && this.newProcesses.length > 0) {
+    
+    while (this.memoryUsed < 3 && this.newProcesses.length > 0) {
       const newProcess = this.newProcesses.shift()!;
       newProcess.startTime = this.process.globalCounter;
       newProcess.waitTime = 0;
@@ -211,7 +218,7 @@ export class SimplePagingService {
 
   public addRandomProcess() : void{
     const id = this.getTotalProcessCount() + 1;
-    const newProcess : BCP = this.automaticInput.getRandomBCP(id);
+    const newProcess : BCPMemory = this.automaticInput.getRandomBCPMemory(id);
     this.process.inputFlag = true;
     this.newProcesses.push(newProcess); 
   }
@@ -265,5 +272,30 @@ export class SimplePagingService {
     });
 
     return bcps;
+  }
+
+  private generateMemoryMap() : MemoryFrame[] {
+    let memory : MemoryFrame[] = [];
+    for(let i = 0; i < this.FRAME_COUNT; i++){
+      if((this.FRAME_COUNT - i) <= this.SO_MEMORY_SIZE){
+        memory.push({
+          id: i,
+          size: this.FRAME_SIZE, 
+          used: this.FRAME_SIZE, 
+          process: MEM_ASSIGN.SO,
+          status: MEM_STATUS.RESERVED
+        });
+
+      }else{
+        memory.push({
+          id: i,
+          size: this.FRAME_SIZE, 
+          used: 0, 
+          process: MEM_ASSIGN.FREE,
+          status: MEM_STATUS.FREE
+        });
+      }
+    }
+    return memory;
   }
 }

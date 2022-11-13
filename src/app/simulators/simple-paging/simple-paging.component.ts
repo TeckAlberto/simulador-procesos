@@ -1,7 +1,8 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { SimplePagingProcess } from 'src/app/models/process.model';
+import { MemoryFrame, SimplePagingProcess } from 'src/app/models/process.model';
+import { MEM_ASSIGN, MEM_STATUS } from 'src/app/resources/memory.numbers.status';
 import { InputService } from 'src/app/services/input.service';
 import { SimplePagingService } from 'src/app/services/simulators/simple-paging.service';
 import { BcpExtendedViewerComponent } from 'src/app/viewers/bcp-extended-viewer/bcp-extended-viewer.component';
@@ -19,7 +20,11 @@ export class SimplePagingComponent implements OnInit {
   public process : SimplePagingProcess;
   private modalRef : NgbModalRef | null;
 
-  private PROCESS_IN_MEMORY = 3;
+  public FRAME_SIZE = 5;
+  public FRAMES = Array.from(Array(this.FRAME_SIZE).keys());
+  public FRAME_COUNT = 44;
+  public ASSIGNATIONS = MEM_ASSIGN;
+  public STATUSES = MEM_STATUS
 
   constructor(private input   : InputService,
               private paging  : SimplePagingService,
@@ -28,9 +33,10 @@ export class SimplePagingComponent implements OnInit {
 
   ngOnInit(): void {
     this.process = this.paging.initSimulator(
-        this.input.getProcessesAsBCP(), 
-        this.PROCESS_IN_MEMORY, 
-        this.input.getQuantum()
+        this.input.getProcessesAsBCPMemory(), 
+        this.input.getQuantum(),
+        this.FRAME_SIZE,
+        this.FRAME_COUNT,
       );
   }
 
@@ -113,4 +119,29 @@ export class SimplePagingComponent implements OnInit {
     return typeof value !== 'undefined';
   }
 
+  public getCellClass(cell : MemoryFrame, index : number){
+    if(cell.process == this.ASSIGNATIONS.FREE){
+      return 'free-frame';
+    }
+    if(cell.process == this.ASSIGNATIONS.SO){
+      return 'so-frame'
+    }
+    return 'free-frame';
+  }
+
+  public memoryMap() : MemoryFrame[][]{
+    let pairs : MemoryFrame[][] = [];
+    let current : MemoryFrame[] = [];
+    this.process.memory.forEach(m =>{
+      current.push(m);
+      if(current.length === 2){
+        pairs.push(current);
+        current = [];
+      }
+    });
+    if(current.length > 0){
+      pairs.push(current);
+    }
+    return pairs;
+  }
 }

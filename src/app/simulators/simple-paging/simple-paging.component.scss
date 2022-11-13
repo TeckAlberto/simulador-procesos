@@ -10,3 +10,19 @@
     color:rgba(255, 255, 255, 0);
     transition: all .5s;
 }
+
+.free-frame{
+    background-color: rgb(255, 255, 255);
+    border-color: rgb(255, 255, 255);
+    max-width: 0.5vw;
+}
+
+.so-frame{
+    background-color: rgb(34, 34, 34);
+    border-color: rgb(34, 34, 34);
+    max-width: 0.5vw;
+}
+
+.memory-table{
+    font-size: 70%;
+}

@@ -48,6 +48,26 @@ export interface BCP{
     currentQuantum? : number
 };
 
+
+export interface BCPMemory{
+    operation: string,
+    operator1: number,
+    operator2: number,
+    maximumTime: number,
+    programId: number,
+    memoryUsed : number,
+    result? : number,
+    elapsedTime : number,
+    startTime? : number,
+    finishTime? : number,
+    timeBlocked? : number,
+    responseTime? : number,
+    returnTime? : number,
+    waitTime? : number,
+    status? : string,
+    currentQuantum? : number
+};
+
 export interface FCFSProcess {
     newQty : number,
     globalCounter : number,
@@ -75,16 +95,24 @@ export interface RRProcess {
     contextChangeFlag : boolean
 };
 
+export interface MemoryFrame{
+    id: number,
+    size: number, 
+    used: number, 
+    status: string 
+    process: number
+};
 export interface SimplePagingProcess {
     newQty : number,
     globalCounter : number,
-    ready : BCP[],
-    executing : BCP | null,
-    blocked: BCP[],
-    finished : BCP[],
+    ready : BCPMemory[],
+    executing : BCPMemory | null,
+    blocked: BCPMemory[],
+    finished : BCPMemory[],
     pauseFlag : boolean,
     errorFlag : boolean,
     interruptFlag : boolean,
     inputFlag : boolean,
-    contextChangeFlag : boolean
+    contextChangeFlag : boolean,
+    memory: MemoryFrame[]
 };

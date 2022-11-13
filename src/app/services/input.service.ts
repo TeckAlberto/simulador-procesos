@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BCP, Process } from '../models/process.model';
+import { BCP, BCPMemory, Process } from '../models/process.model';
 import { ENUM_OPERATIONS, operations } from '../resources/operation.list';
 
 @Injectable({
@@ -34,7 +34,7 @@ export class InputService {
       this.quantum = quantum;
   }
 
-  public getRandomProcess(){
+  public getRandomProcess() : Process{
     const id = this.processes.length + 1;
     let randomProcess : Process;
 
@@ -70,6 +70,13 @@ export class InputService {
     }while(!this.validateOperation(randomProcess));
 
     return randomProcess;
+  }
+
+  public getRandomBCPMemory(id : number) : BCPMemory{
+    return {
+      ...this.getRandomBCP(id),
+      memoryUsed: this.randomNumber(6, 28)
+    };
   }
 
   public validateOperation(process : Process | BCP){
@@ -111,6 +118,23 @@ export class InputService {
       }
     });
   }
+
+  
+  public getProcessesAsBCPMemory() : BCPMemory[]{
+    return this.processes.map(p => {
+      return {
+        elapsedTime: p.elapsedTime,
+        maximumTime: p.maximumTime,
+        operation: p.operation,
+        operator1: p.operator1,
+        operator2: p.operator2,
+        programId: p.programId,
+        result: p.result,
+        memoryUsed: this.randomNumber(6, 28)
+      }
+    });
+  }
+ 
 
   public getQuantum() : number{
     return this.quantum;
