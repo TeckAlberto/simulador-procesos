@@ -24,11 +24,14 @@
                             <tr *ngFor="let frames of memoryMap()">
                                 <ng-container *ngFor="let frame of frames">
                                     <td> {{ frame.id }} </td>
-                                    <td *ngFor="let idx of FRAMES" [class]="getCellClass(frame, idx)"></td>
+                                    <td *ngFor="let idx of FRAMES"
+                                        [class]="getCellClass(frame, idx)" 
+                                        class="frame">
+                                    </td>
                                     <ng-container [ngSwitch]="frame.process">
                                         <td colspan="2" *ngSwitchCase="ASSIGNATIONS.SO">S.O.</td>
                                         <td colspan="2" *ngSwitchCase="ASSIGNATIONS.FREE">LIBRE</td>
-                                        <td *ngSwitchDefault>Proceso {{ frame.process }} </td>
+                                        <td *ngSwitchDefault>#{{ frame.process }} </td>
                                     </ng-container>
                                     <td *ngIf="frame.process != ASSIGNATIONS.FREE && frame.process != ASSIGNATIONS.SO"> {{ frame.status }} </td>
                                 </ng-container>
@@ -45,29 +48,28 @@
             <fieldset class="scheduler-border">
                 <legend class="scheduler-border">Detalles</legend>
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-4 text-left">
                         <h5 class="font-weight-bold">
                             Procesos nuevos:
                             {{ process.newQty }} 
                         </h5>
+
+                        <h5 class="font-weight-bold" *ngIf="nextProcess">
+                            ID sig. proceso:
+                            {{ nextProcess.programId }} 
+                        </h5>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4 text-left">
                         <h5 class="font-weight-bold">
                             Procesos en memoria:
                             {{ getMemoryUsed() }} 
                         </h5>
-                    </div>
-                    <div class="col-md-3">
-                        <h5 class="font-weight-bold">
-                            Quantum:
-                            {{ getQuantum() }} 
-                            <i class="ml-1 fas fa-recycle" 
-                                [ngClass]="{'show-quantum' : process.contextChangeFlag, 
-                                'hide-quantum' : !process.contextChangeFlag}">
-                            </i>
+                        <h5 class="font-weight-bold" *ngIf="nextProcess">
+                            Memoria sig. proceso:
+                            {{ nextProcess.memoryUsed }} 
                         </h5>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4 text-left">
                         <h5 class="font-weight-bold">
                             Contador global:
                             {{ process.globalCounter }}
@@ -75,6 +77,14 @@
                                 <i class="fas fa-pause pl-2 pr-1"></i>
                                 Pausado
                             </span>
+                        </h5>
+                        <h5 class="font-weight-bold">
+                            Quantum:
+                            {{ getQuantum() }} 
+                            <i class="ml-1 fas fa-recycle" 
+                                [ngClass]="{'show-quantum' : process.contextChangeFlag, 
+                                'hide-quantum' : !process.contextChangeFlag}">
+                            </i>
                         </h5>
                     </div>
                 </div>
@@ -174,6 +184,10 @@
                                         <tr>
                                             <td>Quantum</td>
                                             <td>{{ process.executing.currentQuantum }} / {{ getQuantum() }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Tamaño</td>
+                                            <td>{{ process.executing.memoryUsed }} </td>
                                         </tr>
                                     </ng-container>
                                     <ng-template #null_process>

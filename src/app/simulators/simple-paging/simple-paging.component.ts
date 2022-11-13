@@ -1,7 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { MemoryFrame, SimplePagingProcess } from 'src/app/models/process.model';
+import { BCPMemory, MemoryFrame, SimplePagingProcess } from 'src/app/models/process.model';
 import { MEM_ASSIGN, MEM_STATUS } from 'src/app/resources/memory.numbers.status';
 import { InputService } from 'src/app/services/input.service';
 import { SimplePagingService } from 'src/app/services/simulators/simple-paging.service';
@@ -108,7 +108,7 @@ export class SimplePagingComponent implements OnInit {
   }
 
   public getMemoryUsed(){
-    return this.paging.memoryUsed;
+    return this.paging.usedMemory;
   }
 
   public getQuantum(){
@@ -126,7 +126,19 @@ export class SimplePagingComponent implements OnInit {
     if(cell.process == this.ASSIGNATIONS.SO){
       return 'so-frame'
     }
-    return 'free-frame';
+    if(cell.used < index){
+      return '';
+    }
+    switch(cell.status){
+      case this.STATUSES.READY:
+        return 'ready-frame';
+      case this.STATUSES.EXECUTING:
+        return 'executing-frame';
+      case this.STATUSES.BLOCKED:
+        return 'blocked-frame';
+      default:
+        return 'free-frame';
+    }
   }
 
   public memoryMap() : MemoryFrame[][]{
@@ -143,5 +155,9 @@ export class SimplePagingComponent implements OnInit {
       pairs.push(current);
     }
     return pairs;
+  }
+
+  public get nextProcess() : BCPMemory{
+    return this.paging.nextProcess;
   }
 }

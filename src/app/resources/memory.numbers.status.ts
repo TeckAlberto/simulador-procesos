@@ -5,5 +5,8 @@ export const MEM_ASSIGN = {
 
 export const MEM_STATUS = {
     RESERVED: 'Reservado',
-    FREE: 'Libre'
+    FREE: 'Libre',
+    READY: 'Listo',
+    EXECUTING: 'Ejecutando',
+    BLOCKED: 'Bloqueado'
 }

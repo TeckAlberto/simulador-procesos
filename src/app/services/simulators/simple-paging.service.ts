@@ -45,15 +45,44 @@ export class SimplePagingService {
 
   private checkProcesses(value : BehaviorSubject<SimplePagingProcess>) : void{
     
-    while (this.memoryUsed < 3 && this.newProcesses.length > 0) {
+    while (this.canFitProcess()) {
       const newProcess = this.newProcesses.shift()!;
       newProcess.startTime = this.process.globalCounter;
       newProcess.waitTime = 0;
+      this.allocateReadyMemory(newProcess);
       this.process.ready.push(newProcess);
       this.process.newQty = this.newProcesses.length;
     }
     this.process.newQty = this.newProcesses.length;
     value.next(this.process);
+  }
+
+  private allocateReadyMemory(process : BCPMemory){
+    let remaining = process.memoryUsed;
+
+    this.process.memory.filter(m => m.status == MEM_STATUS.FREE).forEach(m=> {
+      if(remaining >= m.size){
+        m.process = process.programId;
+        m.status = MEM_STATUS.READY;
+        m.used = m.size;
+        remaining -= m.size;
+      }else if(remaining > 0){
+        m.process = process.programId;
+        m.status = MEM_STATUS.READY;
+        m.used = remaining;
+        remaining = 0;
+      }
+    });
+  }
+
+  private changeStatus(process : BCPMemory, status : string){
+    this.process.memory.filter(m => m.process == process.programId).forEach(s => {
+      s.status = status;
+      if(status == MEM_STATUS.FREE){
+        s.used = 0;
+        s.process = MEM_ASSIGN.FREE
+      }
+    })
   }
 
   public executeSimulator(): Observable<SimplePagingProcess> {
@@ -63,12 +92,13 @@ export class SimplePagingService {
     const observer = async () => {
       while (this.areProcessesInMemory) {
 
-        // Asegurar que siempre que se pueda haya 3 procesos en memoria
+        // Asegurar que se llene la memoria
         this.checkProcesses(value);
 
         // Verificar si el quantum terminó
         if(this.process.executing && (this.process.executing.currentQuantum === this.QUANTUM)){
           this.process.ready.push(this.process.executing);
+          this.changeStatus(this.process.executing, MEM_STATUS.READY);
           this.process.executing = null;
           this.process.contextChangeFlag = true;
           
@@ -82,6 +112,7 @@ export class SimplePagingService {
         // Verificar si podemos tener un proceso ejecutándose
         if (this.process.executing == null && this.process.ready.length > 0) {
           this.process.executing = this.process.ready.shift()!;
+          this.changeStatus(this.process.executing, MEM_STATUS.EXECUTING);
           this.process.executing.currentQuantum = 0;
           
           // Calculamos su tiempo de respuesta
@@ -114,6 +145,7 @@ export class SimplePagingService {
             this.process.executing.finishTime = this.process.globalCounter;
             this.process.executing.returnTime = this.process.executing.finishTime - this.process.executing.startTime!;
             this.process.finished.push(this.process.executing);
+            this.changeStatus(this.process.executing, MEM_STATUS.FREE);
             this.process.executing = null;
           }
         }
@@ -121,6 +153,7 @@ export class SimplePagingService {
           this.process.interruptFlag = false;
           if(this.process.executing != null){
             this.process.executing!.timeBlocked = 0;
+            this.changeStatus(this.process.executing, MEM_STATUS.BLOCKED);
             this.process.blocked.push(this.process.executing!);
           }
           this.process.executing = null;
@@ -144,6 +177,7 @@ export class SimplePagingService {
               this.process.executing!.result = f(operator1, operator2);
               this.process.executing!.finishTime = this.process.globalCounter;
               this.process.executing!.returnTime = this.process.executing!.finishTime - this.process.executing.startTime!;
+              this.changeStatus(this.process.executing, MEM_STATUS.FREE);
 
               this.process.finished.push(this.process.executing);
               this.process.executing = null;
@@ -166,8 +200,6 @@ export class SimplePagingService {
             return true;
           });
 
-
-
         }
         value.next(this.process);
 
@@ -179,14 +211,26 @@ export class SimplePagingService {
     return observable;
   }
 
-  public get memoryUsed(): number {
-    let count = 0;
-    if (this.process.executing != null) {
-      count++;
+  private canFitProcess() : boolean{
+    if(!this.nextProcess){
+      return false;
     }
-    count += this.process.blocked.length;
-    count += this.process.ready.length;
-    return count;
+    const nextFramesRequired = Math.ceil(this.nextProcess.memoryUsed / this.FRAME_SIZE);
+    console.log({nextFramesRequired});
+    console.log(this.usedMemory, this.freeMemory);
+    return this.freeMemory > nextFramesRequired;
+  }
+
+  public get nextProcess() : BCPMemory{
+    return this.newProcesses[0];
+  }
+
+  public get usedMemory(): number {
+    return this.process.memory.filter(m => m.status != MEM_STATUS.FREE).length;
+  }
+
+  public get freeMemory() : number{
+    return this.process.memory.filter(m => m.status == MEM_STATUS.FREE).length;
   }
 
   private get areProcessesInMemory(): boolean {
