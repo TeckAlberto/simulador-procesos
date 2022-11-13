@@ -22,6 +22,7 @@ import { RoundRobinComponent } from './simulators/round-robin/round-robin.compon
 import { CreditsComponent } from './extras/credits/credits.component';
 import { ProducerConsumerComponent } from './extras/producer-consumer/producer-consumer.component';
 import { SimplePagingComponent } from './simulators/simple-paging/simple-paging.component';
+import { MemoryViewerComponent } from './viewers/memory-viewer/memory-viewer.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { SimplePagingComponent } from './simulators/simple-paging/simple-paging.
     ProducerConsumerComponent,
     CreditsComponent,
     SimplePagingComponent,
+    MemoryViewerComponent,
   ],
   imports: [
     BrowserModule,

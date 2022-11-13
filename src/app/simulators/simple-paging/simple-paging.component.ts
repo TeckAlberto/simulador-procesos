@@ -6,6 +6,7 @@ import { MEM_ASSIGN, MEM_STATUS } from 'src/app/resources/memory.numbers.status'
 import { InputService } from 'src/app/services/input.service';
 import { SimplePagingService } from 'src/app/services/simulators/simple-paging.service';
 import { BcpExtendedViewerComponent } from 'src/app/viewers/bcp-extended-viewer/bcp-extended-viewer.component';
+import { MemoryViewerComponent } from 'src/app/viewers/memory-viewer/memory-viewer.component';
 
 @Component({
   selector: 'app-simple-paging',
@@ -18,7 +19,8 @@ export class SimplePagingComponent implements OnInit {
   public paused = false;
   public finished = false;
   public process : SimplePagingProcess;
-  private modalRef : NgbModalRef | null;
+  private bcpModalRef : NgbModalRef | null;
+  private memoryModalRef : NgbModalRef | null;
 
   public FRAME_SIZE = 5;
   public FRAMES = Array.from(Array(this.FRAME_SIZE).keys());
@@ -50,8 +52,8 @@ export class SimplePagingComponent implements OnInit {
       },
       complete: () => {
         this.toastr.success('Todos los trabajos terminados', 'Ejecución completa');
-        this.modalRef = this.modal.open(BcpExtendedViewerComponent, { size: 'xl', scrollable: true, centered: true });
-        this.modalRef.componentInstance.bcps = this.paging.getBCPS();
+        this.bcpModalRef = this.modal.open(BcpExtendedViewerComponent, { size: 'xl', scrollable: true, centered: true });
+        this.bcpModalRef.componentInstance.bcps = this.paging.getBCPS();
         this.finished = true;
     }});
   }
@@ -79,8 +81,17 @@ export class SimplePagingComponent implements OnInit {
           break;
         case 'b':
         case 'B':
-          this.modalRef = this.modal.open(BcpExtendedViewerComponent, { size: 'xl', scrollable: true, centered: true });
-          this.modalRef.componentInstance.bcps = this.paging.getBCPS();
+          this.bcpModalRef = this.modal.open(BcpExtendedViewerComponent, { size: 'xl', scrollable: true, centered: true });
+          this.bcpModalRef.componentInstance.bcps = this.paging.getBCPS();
+          this.paused = true;
+          this.paging.pause();
+          break;
+        case 't':
+        case 'T':
+          this.memoryModalRef = this.modal.open(MemoryViewerComponent, { size: 'xl', scrollable: true, centered: true});
+          this.memoryModalRef.componentInstance.memory = this.process.memory;
+          this.memoryModalRef.componentInstance.isExtended = true;
+          this.memoryModalRef.componentInstance.isModal = true;
           this.paused = true;
           this.paging.pause();
           break;
@@ -96,9 +107,13 @@ export class SimplePagingComponent implements OnInit {
       this.toastr.info('Ejecución reanudada', 'Interrupción (C)');
       this.paused = false;
       this.paging.resume();
-      if(this.modalRef){
-        this.modalRef.dismiss('Closed');
-        this.modalRef = null;
+      if(this.bcpModalRef){
+        this.bcpModalRef.dismiss('Closed');
+        this.bcpModalRef = null;
+      }
+      if(this.memoryModalRef){
+        this.memoryModalRef.dismiss('Closed');
+        this.memoryModalRef = null;
       }
     }
   }
