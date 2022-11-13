@@ -8,7 +8,7 @@ export interface Process{
     result? : number,
     batchNumber? : number,
     elapsedTime : number
-}
+};
 
 export interface BatchProcess{
     pendingBatches : number,
@@ -17,7 +17,7 @@ export interface BatchProcess{
     executingProcess : Process | null,
     doneProcesses: Process[],
     globalCounter : number
-}
+};
 
 export interface MultiprogrammingProcess{
     pendingBatches : number,
@@ -28,7 +28,7 @@ export interface MultiprogrammingProcess{
     pauseFlag : boolean,
     errorFlag: boolean,
     interruptFlag : boolean
-}
+};
 
 export interface BCP{
     operation: string,
@@ -46,7 +46,7 @@ export interface BCP{
     waitTime? : number,
     status? : string,
     currentQuantum? : number
-}
+};
 
 export interface FCFSProcess {
     newQty : number,
@@ -59,8 +59,7 @@ export interface FCFSProcess {
     errorFlag : boolean,
     interruptFlag : boolean,
     inputFlag : boolean,
-}
-
+};
 
 export interface RRProcess {
     newQty : number,
@@ -74,4 +73,18 @@ export interface RRProcess {
     interruptFlag : boolean,
     inputFlag : boolean,
     contextChangeFlag : boolean
-}
+};
+
+export interface SimplePagingProcess {
+    newQty : number,
+    globalCounter : number,
+    ready : BCP[],
+    executing : BCP | null,
+    blocked: BCP[],
+    finished : BCP[],
+    pauseFlag : boolean,
+    errorFlag : boolean,
+    interruptFlag : boolean,
+    inputFlag : boolean,
+    contextChangeFlag : boolean
+};

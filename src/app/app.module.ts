@@ -21,6 +21,7 @@ import { QuantumInputComponent } from './input/quantum-input/quantum-input.compo
 import { RoundRobinComponent } from './simulators/round-robin/round-robin.component';
 import { CreditsComponent } from './extras/credits/credits.component';
 import { ProducerConsumerComponent } from './extras/producer-consumer/producer-consumer.component';
+import { SimplePagingComponent } from './simulators/simple-paging/simple-paging.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { ProducerConsumerComponent } from './extras/producer-consumer/producer-c
     RoundRobinComponent,
     ProducerConsumerComponent,
     CreditsComponent,
+    SimplePagingComponent,
   ],
   imports: [
     BrowserModule,
