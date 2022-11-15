@@ -22,9 +22,10 @@
                 >
                     <thead>
                         <tr>
-                            <th>ID Programa</th>
+                            <th>ID</th>
                             <th>Estado</th>
                             <th>Operación</th>
+                            <th *ngIf="isBCPMemory()">Tamaño</th>
                             <th>Resultado</th>
                             <th>T. Estimado</th>
                             <th>T. Llegada</th>
@@ -54,6 +55,9 @@
                                 {{ bcp.operator2 }}
                             </td>
 
+                            <td *ngIf="isBCPMemory()">
+                                {{ instanceofBCPMemory(bcp) ? bcp.memoryUsed : '' }}
+                            </td>
 
                             <td *ngIf="isValid(bcp.result)">
                                 {{ bcp.result | number:'1.0-3' }}

@@ -194,6 +194,7 @@ export class SimplePagingService {
             b.waitTime!++;
             if (b.timeBlocked == this.TIME_IN_BLOCK) {
               this.process.ready.push(b);
+              this.changeStatus(b, MEM_STATUS.READY);
               return false;
             }
             

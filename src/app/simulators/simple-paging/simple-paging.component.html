@@ -1,20 +1,20 @@
 <div>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-xl-3">
             <fieldset class="scheduler-border">
                 <legend class="scheduler-border">Memoria</legend>
                 <app-memory-viewer [isExtended]="false" [memory]="process.memory" [isModal]="false">
                 </app-memory-viewer>
             </fieldset>
         </div>
-        <div class="col-md-9">
+        <div class="col-xl-9">
             <h3 class="text-center">
                 Ejecución de procesos
             </h3>
             <fieldset class="scheduler-border">
                 <legend class="scheduler-border">Detalles</legend>
                 <div class="row">
-                    <div class="col-md-4 text-left">
+                    <div class="col-xl-4 text-left">
                         <h5 class="font-weight-bold">
                             Procesos nuevos:
                             {{ process.newQty }} 
@@ -25,7 +25,7 @@
                             {{ nextProcess.programId }} 
                         </h5>
                     </div>
-                    <div class="col-md-4 text-left">
+                    <div class="col-xl-4 text-left">
                         <h5 class="font-weight-bold">
                             Procesos en memoria:
                             {{ getMemoryUsed() }} 
@@ -35,7 +35,7 @@
                             {{ nextProcess.memoryUsed }} 
                         </h5>
                     </div>
-                    <div class="col-md-4 text-left">
+                    <div class="col-xl-4 text-left">
                         <h5 class="font-weight-bold">
                             Contador global:
                             {{ process.globalCounter }}
@@ -56,7 +56,7 @@
                 </div>
             </fieldset>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-xl-4">
                     <fieldset class="scheduler-border">
                         <legend class="scheduler-border">Procesos listos</legend>
                         <div class="table-responsive">
@@ -114,7 +114,7 @@
                         </div>
                     </fieldset>
                 </div>
-                <div class="col-md-4">
+                <div class="col-xl-4">
                     <fieldset class="scheduler-border">
                         <legend class="scheduler-border">Proceso en ejecución</legend>
                         <div class="table-responsive">
@@ -182,7 +182,7 @@
                         </div>
                     </fieldset>
                 </div>
-                <div class="col-md-4">
+                <div class="col-xl-4">
                     <fieldset class="scheduler-border">
                         <legend class="scheduler-border">Procesos terminados</legend>
                         <div class="table-responsive">
