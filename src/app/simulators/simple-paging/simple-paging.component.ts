@@ -122,8 +122,8 @@ export class SimplePagingComponent implements OnInit {
     return this.paging.TIME_IN_BLOCK;
   }
 
-  public getMemoryUsed(){
-    return this.paging.usedMemory;
+  public getProcessCount(){
+    return this.paging.processCount;
   }
 
   public getQuantum(){

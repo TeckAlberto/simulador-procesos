@@ -27,7 +27,6 @@ export class SimplePagingService {
 
     this.QUANTUM = quantum;
     this.process = {
-      newQty: 0,
       ready: [],
       blocked: [],
       executing: null,
@@ -38,7 +37,8 @@ export class SimplePagingService {
       interruptFlag: false,
       inputFlag: false,
       contextChangeFlag: false,
-      memory: this.generateMemoryMap()
+      memory: this.generateMemoryMap(),
+      newQty: this.newProcesses.length,
     };
     return this.process;
   }
@@ -60,28 +60,32 @@ export class SimplePagingService {
   private allocateReadyMemory(process : BCPMemory){
     let remaining = process.memoryUsed;
 
-    this.process.memory.filter(m => m.status == MEM_STATUS.FREE).forEach(m=> {
-      if(remaining >= m.size){
-        m.process = process.programId;
-        m.status = MEM_STATUS.READY;
-        m.used = m.size;
-        remaining -= m.size;
-      }else if(remaining > 0){
-        m.process = process.programId;
-        m.status = MEM_STATUS.READY;
-        m.used = remaining;
-        remaining = 0;
-      }
+    this.process.memory
+      .filter(m => m.status == MEM_STATUS.FREE)
+      .forEach(m => {
+        if(remaining >= m.size){
+          m.process = process.programId;
+          m.status = MEM_STATUS.READY;
+          m.used = m.size;
+          remaining -= m.size;
+        }else if(remaining > 0){
+          m.process = process.programId;
+          m.status = MEM_STATUS.READY;
+          m.used = remaining;
+          remaining = 0;
+        }
     });
   }
 
   private changeStatus(process : BCPMemory, status : string){
-    this.process.memory.filter(m => m.process == process.programId).forEach(s => {
-      s.status = status;
-      if(status == MEM_STATUS.FREE){
-        s.used = 0;
-        s.process = MEM_ASSIGN.FREE
-      }
+    this.process.memory
+      .filter(m => m.process == process.programId)
+      .forEach(s => {
+        s.status = status;
+        if(status == MEM_STATUS.FREE){
+          s.used = 0;
+          s.process = MEM_ASSIGN.FREE
+        }
     })
   }
 
@@ -217,13 +221,15 @@ export class SimplePagingService {
       return false;
     }
     const nextFramesRequired = Math.ceil(this.nextProcess.memoryUsed / this.FRAME_SIZE);
-    console.log({nextFramesRequired});
-    console.log(this.usedMemory, this.freeMemory);
-    return this.freeMemory > nextFramesRequired;
+    return this.freeMemory >= nextFramesRequired;
   }
 
   public get nextProcess() : BCPMemory{
     return this.newProcesses[0];
+  }
+
+  public get processCount() : number{
+    return this.process.blocked.length + this.process.ready.length + ((this.process.executing != null) ? 1 : 0);
   }
 
   public get usedMemory(): number {

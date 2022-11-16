@@ -62,7 +62,7 @@ export class MemoryViewerComponent implements OnInit {
     if(cell.process == this.ASSIGNATIONS.SO){
       return '  SO '[index];
     }
-    if(cell.used < index){
+    if(cell.used <= index){
       return '';
     }
 
@@ -79,7 +79,7 @@ export class MemoryViewerComponent implements OnInit {
     if(cell.process == this.ASSIGNATIONS.SO){
       return 'so-frame'
     }
-    if(cell.used < index){
+    if(cell.used <= index){
       return '';
     }
     switch(cell.status){
