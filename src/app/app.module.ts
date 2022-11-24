@@ -23,6 +23,7 @@ import { CreditsComponent } from './extras/credits/credits.component';
 import { ProducerConsumerComponent } from './extras/producer-consumer/producer-consumer.component';
 import { SimplePagingComponent } from './simulators/simple-paging/simple-paging.component';
 import { MemoryViewerComponent } from './viewers/memory-viewer/memory-viewer.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { MemoryViewerComponent } from './viewers/memory-viewer/memory-viewer.com
     }),
     RouterModule.forRoot(AppRoutes),
     ReactiveFormsModule,
-    NgbModule
+    NgbModule,
+    HttpClientModule
   ],
   providers: [
     NgbActiveModal
