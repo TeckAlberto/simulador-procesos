@@ -16,6 +16,7 @@ import { RoundRobinComponent } from "./simulators/round-robin/round-robin.compon
 import { ProducerConsumerComponent } from "./extras/producer-consumer/producer-consumer.component";
 import { CreditsComponent } from "./extras/credits/credits.component";
 import { SimplePagingComponent } from "./simulators/simple-paging/simple-paging.component";
+import { SuspendedProcessComponent } from "./simulators/suspended-process/suspended-process.component";
 
 export const AppRoutes : Route[] = [
     {
@@ -42,7 +43,7 @@ export const AppRoutes : Route[] = [
                 component: QuantumInputComponent,
                 data: {
                     title: 'Ingresar procesos y quantum',
-                    redirect: ['simple-paging']
+                    redirect: ['suspended-process']
                 }
             },
             {
@@ -106,6 +107,14 @@ export const AppRoutes : Route[] = [
                 canActivate: [ EmptyQuantumGuard ],
                 data: {
                     title: 'Paginación simple'
+                }
+            },
+            {
+                path: 'suspended-process',
+                component: SuspendedProcessComponent,
+                canActivate: [ EmptyQuantumGuard ],
+                data: {
+                    title: 'Procesos suspendidos'
                 }
             },
             {

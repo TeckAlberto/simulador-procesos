@@ -24,6 +24,7 @@ import { ProducerConsumerComponent } from './extras/producer-consumer/producer-c
 import { SimplePagingComponent } from './simulators/simple-paging/simple-paging.component';
 import { MemoryViewerComponent } from './viewers/memory-viewer/memory-viewer.component';
 import { HttpClientModule } from '@angular/common/http';
+import { SuspendedProcessComponent } from './simulators/suspended-process/suspended-process.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { HttpClientModule } from '@angular/common/http';
     CreditsComponent,
     SimplePagingComponent,
     MemoryViewerComponent,
+    SuspendedProcessComponent,
   ],
   imports: [
     BrowserModule,
