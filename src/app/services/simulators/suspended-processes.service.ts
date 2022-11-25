@@ -349,4 +349,18 @@ export class SuspendedProcessesService {
     }
     return memory;
   }
+
+  public async suspendProcess() : Promise<boolean>{
+    this.process.pauseFlag = true;  //Evitar que cambien de estado
+    
+    this.process.pauseFlag = false;
+    return true;
+  }
+
+  public async returnProcess() : Promise<boolean>{
+    this.process.pauseFlag = true;  //Evitar que cambien de estado
+    
+    this.process.pauseFlag = false;
+    return true;
+  }
 }

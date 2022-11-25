@@ -42,7 +42,7 @@ app.post('/append', async(req, res) => {
   return res.json({ok: true});
 });
 
-app.put('/remove-first', async(req, res) => {
+app.put('/get-first', async(req, res) => {
   const filename = req.body['filename'] || 'process.json';
   const readText = await fs.readFile(`files/${filename}`);
   const content = JSON.parse(readText);

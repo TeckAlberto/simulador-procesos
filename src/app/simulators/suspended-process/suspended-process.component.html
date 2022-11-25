@@ -14,28 +14,19 @@
             <fieldset class="scheduler-border">
                 <legend class="scheduler-border">Detalles</legend>
                 <div class="row">
-                    <div class="col-xl-4 text-left">
+                    <div class="col-xl-4 text-center">
                         <h5 class="font-weight-bold">
                             Procesos nuevos:
                             {{ process.newQty }} 
                         </h5>
-
-                        <h5 class="font-weight-bold" *ngIf="nextProcess">
-                            ID sig. proceso:
-                            {{ nextProcess.programId }} 
-                        </h5>
                     </div>
-                    <div class="col-xl-4 text-left">
+                    <div class="col-xl-4 text-center">
                         <h5 class="font-weight-bold">
-                            Procesos en memoria:
-                            {{ getProcessCount() }} 
-                        </h5>
-                        <h5 class="font-weight-bold" *ngIf="nextProcess">
-                            Memoria sig. proceso:
-                            {{ nextProcess.memoryUsed }} 
+                            Procesos suspendidos:
+                            0
                         </h5>
                     </div>
-                    <div class="col-xl-4 text-left">
+                    <div class="col-xl-4 text-center">
                         <h5 class="font-weight-bold">
                             Contador global:
                             {{ process.globalCounter }}
@@ -44,6 +35,34 @@
                                 Pausado
                             </span>
                         </h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-2 text-center" *ngIf="nextProcess">
+                        <h5 class="font-weight-bold" *ngIf="nextProcess">
+                            ID:
+                            {{ nextProcess.programId }} 
+                        </h5>
+                    </div>
+                    <div class="col-xl-2 text-center">
+                        <h5 class="font-weight-bold" *ngIf="nextProcess">
+                            Memoria:
+                            {{ nextProcess.memoryUsed }} 
+                        </h5>
+                    </div>
+                    <div class="col-xl-2 text-center" *ngIf="nextProcess">
+                        <h5 class="font-weight-bold" *ngIf="nextProcess">
+                            ID:
+                            {{ nextProcess.programId }} 
+                        </h5>
+                    </div>
+                    <div class="col-xl-2 text-center">
+                        <h5 class="font-weight-bold" *ngIf="nextProcess">
+                            Memoria:
+                            {{ nextProcess.memoryUsed }} 
+                        </h5>
+                    </div>
+                    <div class="col-xl-4 text-center">
                         <h5 class="font-weight-bold">
                             Quantum:
                             {{ getQuantum() }} 
@@ -51,6 +70,10 @@
                                 [ngClass]="{'show-quantum' : process.contextChangeFlag, 
                                 'hide-quantum' : !process.contextChangeFlag}">
                             </i>
+
+                            Procesos:  
+                            {{ getProcessCount() }} 
+
                         </h5>
                     </div>
                 </div>

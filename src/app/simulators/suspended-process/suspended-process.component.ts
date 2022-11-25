@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { BCPMemory, MemoryFrame, SimplePagingProcess } from 'src/app/models/process.model';
 import { MEM_ASSIGN, MEM_STATUS } from 'src/app/resources/memory.numbers.status';
 import { InputService } from 'src/app/services/input.service';
-import { SimplePagingService } from 'src/app/services/simulators/simple-paging.service';
+import { SuspendedProcessesService } from 'src/app/services/simulators/suspended-processes.service';
 import { BcpExtendedViewerComponent } from 'src/app/viewers/bcp-extended-viewer/bcp-extended-viewer.component';
 import { MemoryViewerComponent } from 'src/app/viewers/memory-viewer/memory-viewer.component';
 
@@ -28,13 +28,13 @@ export class SuspendedProcessComponent implements OnInit {
   public ASSIGNATIONS = MEM_ASSIGN;
   public STATUSES = MEM_STATUS
 
-  constructor(private input   : InputService,
-              private paging  : SimplePagingService,
-              private toastr  : ToastrService,
-              private modal   : NgbModal) { }
+  constructor(private input     : InputService,
+              private suspended : SuspendedProcessesService,
+              private toastr    : ToastrService,
+              private modal     : NgbModal) { }
 
   ngOnInit(): void {
-    this.process = this.paging.initSimulator(
+    this.process = this.suspended.initSimulator(
         this.input.getProcessesAsBCPMemory(), 
         this.input.getQuantum(),
         this.FRAME_SIZE,
@@ -45,7 +45,7 @@ export class SuspendedProcessComponent implements OnInit {
   public startSimulation(){
     this.started = true;
     this.input.resetProcesses();
-    this.paging.executeSimulator().subscribe({
+    this.suspended.executeSimulator().subscribe({
       next: (process) => {
         this.process = process;
         console.log(this.process);
@@ -53,38 +53,38 @@ export class SuspendedProcessComponent implements OnInit {
       complete: () => {
         this.toastr.success('Todos los trabajos terminados', 'Ejecución completa');
         this.bcpModalRef = this.modal.open(BcpExtendedViewerComponent, { size: 'xl', scrollable: true, centered: true });
-        this.bcpModalRef.componentInstance.bcps = this.paging.getBCPS();
+        this.bcpModalRef.componentInstance.bcps = this.suspended.getBCPS();
         this.finished = true;
     }});
   }
 
   @HostListener('document:keypress', ['$event'])
-  private handleKeyboardEvent(event: KeyboardEvent) {
+  private async handleKeyboardEvent(event: KeyboardEvent) {
     console.log('Tecla: ' + event.key);
     if(!this.paused && !this.finished){
       switch(event.key){
         case 'e':
         case 'E':
           this.toastr.warning('Interrupción por entrada/salida', 'Interrupción (E)');
-          this.paging.raiseIOInterrupt();
+          this.suspended.raiseIOInterrupt();
           break;
         case 'w':
         case 'W':
           this.toastr.error('Error de ejecución', 'Interrupción (W)');
-          this.paging.raiseError();
+          this.suspended.raiseError();
           break;
         case 'p':
         case 'P':
           this.toastr.info('Ejecución en pausa', 'Interrupción (P)');
           this.paused = true;
-          this.paging.pause();
+          this.suspended.pause();
           break;
         case 'b':
         case 'B':
           this.bcpModalRef = this.modal.open(BcpExtendedViewerComponent, { size: 'xl', scrollable: true, centered: true });
-          this.bcpModalRef.componentInstance.bcps = this.paging.getBCPS();
+          this.bcpModalRef.componentInstance.bcps = this.suspended.getBCPS();
           this.paused = true;
-          this.paging.pause();
+          this.suspended.pause();
           break;
         case 't':
         case 'T':
@@ -93,12 +93,30 @@ export class SuspendedProcessComponent implements OnInit {
           this.memoryModalRef.componentInstance.isExtended = true;
           this.memoryModalRef.componentInstance.isModal = true;
           this.paused = true;
-          this.paging.pause();
+          this.suspended.pause();
           break;
         case 'n':
         case 'N':
           this.toastr.success('Se ha agregado un nuevo proceso', 'Proceso agregado');
-          this.paging.addRandomProcess();
+          this.suspended.addRandomProcess();
+          break;
+        case 'S':
+        case 's':
+          this.toastr.info('Petición de suspención de proceso recibida', 'Interrupción (S)');
+          if(await this.suspended.suspendProcess()){
+            this.toastr.success('Se ha suspendido el proceso con éxito', 'Proceso suspendido')
+          }else{
+            this.toastr.error('No existen procesos bloqueados a suspender', 'No se pudo suspender proceso');
+          }
+          break;
+        case 'R':
+        case 'R':
+          this.toastr.info('Petición de retorno de proceso suspendido recibida', 'Interrupción (R)');
+          if(await this.suspended.returnProcess()){
+            this.toastr.success('Se ha retornado el proceso con éxito', 'Proceso retornado')
+          }else{
+            this.toastr.error('No existen procesos suspendidos', 'No se pudo retornar proceso');
+          }
           break;
         default:
           break;
@@ -106,7 +124,7 @@ export class SuspendedProcessComponent implements OnInit {
     }else if(event.key == 'C' || event.key == 'c'){
       this.toastr.info('Ejecución reanudada', 'Interrupción (C)');
       this.paused = false;
-      this.paging.resume();
+      this.suspended.resume();
       if(this.bcpModalRef){
         this.bcpModalRef.dismiss('Closed');
         this.bcpModalRef = null;
@@ -119,15 +137,15 @@ export class SuspendedProcessComponent implements OnInit {
   }
 
   public getBlockedTime(){
-    return this.paging.TIME_IN_BLOCK;
+    return this.suspended.TIME_IN_BLOCK;
   }
 
   public getProcessCount(){
-    return this.paging.processCount;
+    return this.suspended.processCount;
   }
 
   public getQuantum(){
-    return this.paging.QUANTUM;
+    return this.suspended.QUANTUM;
   }
 
   public isValid(value : number | undefined){
@@ -173,7 +191,7 @@ export class SuspendedProcessComponent implements OnInit {
   }
 
   public get nextProcess() : BCPMemory{
-    return this.paging.nextProcess;
+    return this.suspended.nextProcess;
   }
 
 }
