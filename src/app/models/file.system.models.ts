@@ -1,4 +1,4 @@
-import { BCP } from "./process.model"
+import { BCPMemory } from "./process.model"
 
 export interface OkResponse{
     ok: boolean
@@ -6,7 +6,7 @@ export interface OkResponse{
 
 export interface GetFirstResponse{
     ok: boolean
-    process?: BCP
+    process?: BCPMemory
 };
 
 export interface FileRequest{
@@ -15,5 +15,5 @@ export interface FileRequest{
 
 export interface AppendRequest{
     filename: string
-    process: BCP
+    process: BCPMemory
 };

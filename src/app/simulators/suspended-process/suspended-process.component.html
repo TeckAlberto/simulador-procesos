@@ -23,7 +23,7 @@
                     <div class="col-xl-4 text-center">
                         <h5 class="font-weight-bold">
                             Procesos suspendidos:
-                            0
+                            {{ process.suspended.length }}
                         </h5>
                     </div>
                     <div class="col-xl-4 text-center">
@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xl-2 text-center" *ngIf="nextProcess">
+                    <div class="col-xl-2 text-center">
                         <h5 class="font-weight-bold" *ngIf="nextProcess">
                             ID:
                             {{ nextProcess.programId }} 
@@ -50,16 +50,16 @@
                             {{ nextProcess.memoryUsed }} 
                         </h5>
                     </div>
-                    <div class="col-xl-2 text-center" *ngIf="nextProcess">
-                        <h5 class="font-weight-bold" *ngIf="nextProcess">
+                    <div class="col-xl-2 text-center">
+                        <h5 class="font-weight-bold" *ngIf="process.suspended.length > 0">
                             ID:
-                            {{ nextProcess.programId }} 
+                            {{ process.suspended[0].programId }} 
                         </h5>
                     </div>
                     <div class="col-xl-2 text-center">
-                        <h5 class="font-weight-bold" *ngIf="nextProcess">
+                        <h5 class="font-weight-bold" *ngIf="process.suspended.length > 0">
                             Memoria:
-                            {{ nextProcess.memoryUsed }} 
+                            {{ process.suspended[0].memoryUsed }} 
                         </h5>
                     </div>
                     <div class="col-xl-4 text-center">

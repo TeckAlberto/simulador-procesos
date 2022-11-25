@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AppendRequest, FileRequest, GetFirstResponse, OkResponse } from '../models/file.system.models';
-import { BCP, Process } from '../models/process.model';
+import { BCPMemory } from '../models/process.model';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +28,7 @@ export class FileManagerService {
     });
   }
 
-  public appendProcess(filename : string, process : Process) : Promise<boolean>{
+  public appendProcess(filename : string, process : BCPMemory) : Promise<boolean>{
     const body : AppendRequest = {
       filename: filename,
       process: process
@@ -45,7 +45,7 @@ export class FileManagerService {
     });
   }
 
-  public getProcess(filename : string) : Promise<BCP | boolean>{
+  public getSuspendedProcess(filename : string) : Promise<BCPMemory | null>{
     const body : FileRequest = {
       filename: filename
     };
@@ -54,11 +54,11 @@ export class FileManagerService {
         const request = this.http.put<GetFirstResponse>(this.files + '/get-first', body);
         const response = await lastValueFrom(request);
         if(!response.ok || !response.process){
-          resolve(false);
+          resolve(null);
         }
         resolve(response.process!);
       }catch{
-        resolve(false);
+        resolve(null);
       }
     });
   }

@@ -1,7 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { BCPMemory, MemoryFrame, SimplePagingProcess } from 'src/app/models/process.model';
+import { BCPMemory, MemoryFrame, SimplePagingProcess, SuspendedProcessesProcess } from 'src/app/models/process.model';
 import { MEM_ASSIGN, MEM_STATUS } from 'src/app/resources/memory.numbers.status';
 import { InputService } from 'src/app/services/input.service';
 import { SuspendedProcessesService } from 'src/app/services/simulators/suspended-processes.service';
@@ -18,7 +18,7 @@ export class SuspendedProcessComponent implements OnInit {
   public started = false;
   public paused = false;
   public finished = false;
-  public process : SimplePagingProcess;
+  public process : SuspendedProcessesProcess;
   private bcpModalRef : NgbModalRef | null;
   private memoryModalRef : NgbModalRef | null;
 
@@ -102,20 +102,21 @@ export class SuspendedProcessComponent implements OnInit {
           break;
         case 'S':
         case 's':
-          this.toastr.info('Petición de suspención de proceso recibida', 'Interrupción (S)');
           if(await this.suspended.suspendProcess()){
-            this.toastr.success('Se ha suspendido el proceso con éxito', 'Proceso suspendido')
+            this.toastr.success('Se ha suspendido el proceso con éxito', 'Proceso suspendido (S)')
           }else{
-            this.toastr.error('No existen procesos bloqueados a suspender', 'No se pudo suspender proceso');
+            this.toastr.error('No existen procesos bloqueados a suspender', 'No se pudo suspender proceso (S)');
           }
           break;
         case 'R':
-        case 'R':
-          this.toastr.info('Petición de retorno de proceso suspendido recibida', 'Interrupción (R)');
-          if(await this.suspended.returnProcess()){
-            this.toastr.success('Se ha retornado el proceso con éxito', 'Proceso retornado')
+        case 'r':
+          if(this.process.suspended.length == 0){
+            this.toastr.error('No hay procesos suspendidos', 'No se puede retornar proceso (R)');
+          }
+          else if(await this.suspended.returnProcess()){
+            this.toastr.success('Se ha retornado el proceso con éxito', 'Proceso retornado (R)')
           }else{
-            this.toastr.error('No existen procesos suspendidos', 'No se pudo retornar proceso');
+            this.toastr.error('No hay suficiente memoria disponible para retornar', 'No se pudo retornar proceso (R)');
           }
           break;
         default:

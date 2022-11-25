@@ -116,3 +116,24 @@ export interface SimplePagingProcess {
     contextChangeFlag : boolean,
     memory: MemoryFrame[]
 };
+
+export interface SuspendedBCP{
+    programId : number,
+    memoryUsed : number
+};
+export interface SuspendedProcessesProcess {
+    filename : string,
+    newQty : number,
+    suspended : SuspendedBCP[],
+    globalCounter : number,
+    ready : BCPMemory[],
+    executing : BCPMemory | null,
+    blocked: BCPMemory[],
+    finished : BCPMemory[],
+    pauseFlag : boolean,
+    errorFlag : boolean,
+    interruptFlag : boolean,
+    inputFlag : boolean,
+    contextChangeFlag : boolean,
+    memory: MemoryFrame[]
+};

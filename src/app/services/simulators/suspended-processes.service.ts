@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { BCP, BCPMemory, MemoryFrame, SimplePagingProcess } from 'src/app/models/process.model';
+import { BCP, BCPMemory, MemoryFrame, SuspendedBCP, SuspendedProcessesProcess } from 'src/app/models/process.model';
 import { MEM_ASSIGN, MEM_STATUS } from 'src/app/resources/memory.numbers.status';
 import { defaultOperation, functionOperations, Operation } from 'src/app/resources/operation.list';
+import { FileManagerService } from '../file-manager.service';
 import { InputService } from '../input.service';
 
 @Injectable({
@@ -10,7 +11,7 @@ import { InputService } from '../input.service';
 })
 export class SuspendedProcessesService {
   private newProcesses: BCPMemory[];
-  private process: SimplePagingProcess;
+  private process: SuspendedProcessesProcess;
 
   public TIME_IN_BLOCK: number = 7;
   private SO_MEMORY_SIZE: number = 4;
@@ -18,15 +19,18 @@ export class SuspendedProcessesService {
   private FRAME_COUNT: number;
   private FRAME_SIZE: number;
 
-  constructor(private automaticInput : InputService) { }
+  constructor(private automaticInput  : InputService,
+              private fileManager     : FileManagerService) { }
 
-  public initSimulator(processes: BCPMemory[], quantum : number, frameSize : number, frameCount : number): SimplePagingProcess {
+  public initSimulator(processes: BCPMemory[], quantum : number, frameSize : number, frameCount : number): SuspendedProcessesProcess {
     this.newProcesses = processes;
     this.FRAME_COUNT = frameCount;
     this.FRAME_SIZE = frameSize;
 
     this.QUANTUM = quantum;
     this.process = {
+      suspended: [],
+      filename: this.fileManager.generateFilename(),
       ready: [],
       blocked: [],
       executing: null,
@@ -43,7 +47,7 @@ export class SuspendedProcessesService {
     return this.process;
   }
 
-  private checkProcesses(value : BehaviorSubject<SimplePagingProcess>) : void{
+  private checkProcesses(value : BehaviorSubject<SuspendedProcessesProcess>) : void{
     
     while (this.canFitProcess()) {
       const newProcess = this.newProcesses.shift()!;
@@ -89,11 +93,16 @@ export class SuspendedProcessesService {
     })
   }
 
-  public executeSimulator(): Observable<SimplePagingProcess> {
-    const value = new BehaviorSubject<SimplePagingProcess>(this.process);
+  public executeSimulator(): Observable<SuspendedProcessesProcess> {
+    const value = new BehaviorSubject<SuspendedProcessesProcess>(this.process);
     const observable = value.asObservable();
 
     const observer = async () => {
+      while(!await this.fileManager.createFile(this.process.filename)){
+        console.error("Couldn't create file, run the file-manager API");
+        await this.delay(10000);
+      }
+
       while (this.areProcessesInMemory) {
 
         // Asegurar que se llene la memoria
@@ -216,11 +225,11 @@ export class SuspendedProcessesService {
     return observable;
   }
 
-  private canFitProcess() : boolean{
-    if(!this.nextProcess){
+  private canFitProcess(process : BCPMemory | SuspendedBCP = this.nextProcess) : boolean{
+    if(!process){
       return false;
     }
-    const nextFramesRequired = Math.ceil(this.nextProcess.memoryUsed / this.FRAME_SIZE);
+    const nextFramesRequired = Math.ceil(process.memoryUsed / this.FRAME_SIZE);
     return this.freeMemory >= nextFramesRequired;
   }
 
@@ -350,17 +359,53 @@ export class SuspendedProcessesService {
     return memory;
   }
 
+  private continueAndReturn(status : boolean){
+    this.process.pauseFlag = false;
+    return status;
+  }
+
   public async suspendProcess() : Promise<boolean>{
     this.process.pauseFlag = true;  //Evitar que cambien de estado
-    
-    this.process.pauseFlag = false;
-    return true;
+    if(this.process.blocked.length == 0){
+      return this.continueAndReturn(false);
+    }
+    const process : BCPMemory = this.process.blocked.shift()!;
+    const ok = await this.fileManager.appendProcess(this.process.filename, process);
+
+    if(!ok){
+      this.process.blocked.push(process);
+      return this.continueAndReturn(false);
+    }
+
+    this.changeStatus(process, MEM_STATUS.FREE);
+    this.process.suspended.push({
+      programId: process.programId,
+      memoryUsed: process.memoryUsed
+    }); //Save the minimum information
+    return this.continueAndReturn(true);
   }
 
   public async returnProcess() : Promise<boolean>{
     this.process.pauseFlag = true;  //Evitar que cambien de estado
-    
-    this.process.pauseFlag = false;
-    return true;
+
+    if(this.process.suspended.length == 0){
+      return this.continueAndReturn(false);
+    }
+    if(!this.canFitProcess(this.process.suspended[0])){
+      return this.continueAndReturn(false);
+    }
+
+    const process = await this.fileManager.getSuspendedProcess(this.process.filename);
+    if(process == null){
+      this.process.suspended.shift();
+      alert('Oh no');
+      console.error('Congruency error');
+      return this.continueAndReturn(false);
+    }
+
+    this.process.suspended.shift();
+    this.allocateReadyMemory(process);
+    this.process.ready.push(process);    
+    return this.continueAndReturn(true);
   }
 }
