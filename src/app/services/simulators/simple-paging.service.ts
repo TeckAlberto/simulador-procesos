@@ -12,8 +12,8 @@ export class SimplePagingService {
   private newProcesses: BCPMemory[];
   private process: SimplePagingProcess;
 
-  public TIME_IN_BLOCK: number = 7;
-  private SO_MEMORY_SIZE: number = 4;
+  public TIME_IN_BLOCK: number = 10;
+  private SO_MEMORY_SIZE: number = 2;
   public QUANTUM : number;
   private FRAME_COUNT: number;
   private FRAME_SIZE: number;
@@ -44,7 +44,7 @@ export class SimplePagingService {
   }
 
   private checkProcesses(value : BehaviorSubject<SimplePagingProcess>) : void{
-    
+
     while (this.canFitProcess()) {
       const newProcess = this.newProcesses.shift()!;
       newProcess.startTime = this.process.globalCounter;
@@ -105,7 +105,7 @@ export class SimplePagingService {
           this.changeStatus(this.process.executing, MEM_STATUS.READY);
           this.process.executing = null;
           this.process.contextChangeFlag = true;
-          
+
           setTimeout(() => {
             this.process.contextChangeFlag = false;
             value.next(this.process);
@@ -118,7 +118,7 @@ export class SimplePagingService {
           this.process.executing = this.process.ready.shift()!;
           this.changeStatus(this.process.executing, MEM_STATUS.EXECUTING);
           this.process.executing.currentQuantum = 0;
-          
+
           // Calculamos su tiempo de respuesta
           if (typeof this.process.executing.responseTime == 'undefined') {
             this.process.executing.responseTime = this.process.globalCounter;
@@ -162,7 +162,7 @@ export class SimplePagingService {
           }
           this.process.executing = null;
 
-        } else if(this.process.inputFlag){    // Interrupción de entrada, no pasa nada pero vuelve a checar 
+        } else if(this.process.inputFlag){    // Interrupción de entrada, no pasa nada pero vuelve a checar
           this.checkProcesses(value);
           this.process.inputFlag = false;
           continue;
@@ -177,7 +177,7 @@ export class SimplePagingService {
             if (this.process.executing!.elapsedTime == this.process.executing!.maximumTime) {  //Si se acabó
               const { operator1, operation, operator2 } = this.process.executing;
               const f: Operation = functionOperations.get(operation) ?? defaultOperation;
-              
+
               this.process.executing!.result = f(operator1, operator2);
               this.process.executing!.finishTime = this.process.globalCounter;
               this.process.executing!.returnTime = this.process.executing!.finishTime - this.process.executing.startTime!;
@@ -201,7 +201,7 @@ export class SimplePagingService {
               this.changeStatus(b, MEM_STATUS.READY);
               return false;
             }
-            
+
             return true;
           });
 
@@ -271,7 +271,7 @@ export class SimplePagingService {
     const id = this.getTotalProcessCount() + 1;
     const newProcess : BCPMemory = this.automaticInput.getRandomBCPMemory(id);
     this.process.inputFlag = true;
-    this.newProcesses.push(newProcess); 
+    this.newProcesses.push(newProcess);
   }
 
   private getTotalProcessCount() : number{
@@ -293,14 +293,14 @@ export class SimplePagingService {
         status: 'Finalizado'
       });
     });
-    
+
     if(this.process.executing){
       bcps.push({
         ... this.process.executing,
         status: 'Ejecutando'
       });
     }
-    
+
     this.process.blocked.forEach(p => {
       bcps.push({
         ...p,
@@ -317,7 +317,7 @@ export class SimplePagingService {
 
     this.newProcesses.forEach(p => {
       bcps.push({
-        ...p, 
+        ...p,
         status: 'Nuevo'
       })
     });
@@ -331,8 +331,8 @@ export class SimplePagingService {
       if((this.FRAME_COUNT - i) <= this.SO_MEMORY_SIZE){
         memory.push({
           id: i,
-          size: this.FRAME_SIZE, 
-          used: this.FRAME_SIZE, 
+          size: this.FRAME_SIZE,
+          used: this.FRAME_SIZE,
           process: MEM_ASSIGN.SO,
           status: MEM_STATUS.RESERVED
         });
@@ -340,8 +340,8 @@ export class SimplePagingService {
       }else{
         memory.push({
           id: i,
-          size: this.FRAME_SIZE, 
-          used: 0, 
+          size: this.FRAME_SIZE,
+          used: 0,
           process: MEM_ASSIGN.FREE,
           status: MEM_STATUS.FREE
         });

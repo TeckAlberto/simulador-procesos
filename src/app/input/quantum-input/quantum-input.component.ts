@@ -38,7 +38,7 @@ export class QuantumInputComponent implements OnInit {
     }
     return control.valid ? 'is-valid' : 'is-invalid';
   }
-  
+
   public submit(){
     this.form.markAllAsTouched();
 
@@ -49,13 +49,13 @@ export class QuantumInputComponent implements OnInit {
 
     const quantity = Number(this.getControl('processesQty').value);
     const quantum = Number(this.getControl('quantum').value);
-    this.input.addRandomProcesses(quantity, quantum); 
+    this.input.addRandomProcesses(quantity, quantum);
     this.execute();
   }
 
   public execute(){
     console.log(this.input.getProcesses());
-    this.router.navigate(this.input.nextRoute());
+    this.router.navigate(['simple-paging']);
   }
 
 }

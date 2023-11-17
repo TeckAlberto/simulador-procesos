@@ -24,7 +24,7 @@ export class SimplePagingComponent implements OnInit {
 
   public FRAME_SIZE = 5;
   public FRAMES = Array.from(Array(this.FRAME_SIZE).keys());
-  public FRAME_COUNT = 44;
+  public FRAME_COUNT = 36;
   public ASSIGNATIONS = MEM_ASSIGN;
   public STATUSES = MEM_STATUS
 
@@ -35,7 +35,7 @@ export class SimplePagingComponent implements OnInit {
 
   ngOnInit(): void {
     this.process = this.paging.initSimulator(
-        this.input.getProcessesAsBCPMemory(), 
+        this.input.getProcessesAsBCPMemory(),
         this.input.getQuantum(),
         this.FRAME_SIZE,
         this.FRAME_COUNT,
@@ -63,14 +63,14 @@ export class SimplePagingComponent implements OnInit {
     console.log('Tecla: ' + event.key);
     if(!this.paused && !this.finished){
       switch(event.key){
-        case 'e':
-        case 'E':
-          this.toastr.warning('Interrupción por entrada/salida', 'Interrupción (E)');
+        case 'i':
+        case 'I':
+          this.toastr.warning('Interrupción por entrada/salida', 'Interrupción (I)');
           this.paging.raiseIOInterrupt();
           break;
-        case 'w':
-        case 'W':
-          this.toastr.error('Error de ejecución', 'Interrupción (W)');
+        case 'e':
+        case 'E':
+          this.toastr.error('Error de ejecución', 'Interrupción (E)');
           this.paging.raiseError();
           break;
         case 'p':
@@ -86,8 +86,8 @@ export class SimplePagingComponent implements OnInit {
           this.paused = true;
           this.paging.pause();
           break;
-        case 't':
-        case 'T':
+        case 'm':
+        case 'M':
           this.memoryModalRef = this.modal.open(MemoryViewerComponent, { size: 'xl', scrollable: true, centered: true});
           this.memoryModalRef.componentInstance.memory = this.process.memory;
           this.memoryModalRef.componentInstance.isExtended = true;

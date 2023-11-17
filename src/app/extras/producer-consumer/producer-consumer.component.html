@@ -7,14 +7,14 @@
                 <legend class="scheduler-border">Productor: Michael Scott</legend>
                 <div class="row">
                     <div class="col-md-5">
-                        <img src="/assets/img/producer.jpg" 
+                        <img src="/assets/img/producer.jpg"
                             class="img-asset" alt="Michael Scott">
                     </div>
                     <div class="col-md-7 text-center">
-                        <span class="badge badge-dark" 
+                        <span class="badge badge-dark"
                             *ngIf="!process.producer.working && !process.consumer.working;else producer">
                             Esperando
-                        </span>                        
+                        </span>
                         <ng-template #producer>
                             <span class="badge badge-primary" *ngIf="process.producer.working"> Trabajando </span>
                             <span class="badge badge-secondary" *ngIf="!process.producer.working"> Durmiendo </span>
@@ -22,7 +22,7 @@
                         <br>
 
                         <h5 class="text-left mt-2">
-                            Posición en buffer: 
+                            Posición en buffer:
                             <span class="producer-cell">
                                 {{process.producer.idx + 1 }}
                             </span>
@@ -51,22 +51,22 @@
                 <legend class="scheduler-border">Consumidor: Dwight Schrute</legend>
                 <div class="row">
                     <div class="col-md-5">
-                        <img src="/assets/img/consumer.webp" 
+                        <img src="/assets/img/consumer.webp"
                             class="img-asset" alt="Dwight Schrute">
                     </div>
                     <div class="col-md-7 text-center">
-                        <span class="badge badge-dark" 
+                        <span class="badge badge-dark"
                             *ngIf="!process.producer.working && !process.consumer.working;else consumer">
                             Esperando
-                        </span>                        
+                        </span>
                         <ng-template #consumer>
                             <span class="badge badge-primary" *ngIf="process.consumer.working"> Trabajando </span>
                             <span class="badge badge-secondary" *ngIf="!process.consumer.working"> Durmiendo </span>
                         </ng-template>
                         <br>
-                        
+
                         <h5 class="text-left mt-2">
-                            Posición en buffer: 
+                            Posición en buffer:
                             <span class="consumer-cell">
                                 {{process.consumer.idx + 1 }}
                             </span>
@@ -92,17 +92,17 @@
                             [ngClass]="{'producer-cell' : process.producer.idx == i, 'consumer-cell' : process.consumer.idx == i}">
                             <span class="buffer-pos">{{ i + 1 }}</span><br>
 
-                            <i class="fas fa-briefcase work-asset" 
+                            <i class="fas fa-briefcase work-asset"
                                 [ngClass]="{'invisible': !cell}"></i>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-    
+
     </fieldset>
 
-    <button class="btn btn-success" *ngIf="!started" (click)="start()"> 
+    <button class="btn btn-success" *ngIf="!started" (click)="start()">
         Empezar
         <i class="fas fa-play"></i>
     </button>

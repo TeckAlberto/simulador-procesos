@@ -10,14 +10,14 @@ import { ProducerConsumerService } from 'src/app/services/simulators/producer-co
 })
 export class ProducerConsumerComponent implements OnInit {
   public process : PCProblem;
-  private BUFFER_SIZE = 25;
-  private MIN_WORK = 2;
-  private MAX_WORK = 5;
+  private BUFFER_SIZE = 35;
+  private MIN_WORK = 3;
+  private MAX_WORK = 10;
   public started = false;
-  
+
   constructor(private router  : Router,
               private pc      : ProducerConsumerService) { }
-  
+
   ngOnInit(): void {
     this.process = this.pc.init(this.BUFFER_SIZE, this.MIN_WORK, this.MAX_WORK);
   }

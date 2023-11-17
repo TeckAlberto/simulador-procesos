@@ -14,7 +14,7 @@ export class ProducerConsumerService {
   private bufferSize : number;
   private minWork : number;
   private maxWork : number;
-  
+  private turn : true;
   constructor(private toastr  : ToastrService) { }
 
   public init(bufferSize : number, minWork : number, maxWork: number) : PCProblem{
@@ -54,7 +54,7 @@ export class ProducerConsumerService {
           this.process.producer.count = 0;
 
           for(let i = 0; i < this.process.workBufferSize; i++){
-            
+
             if(this.process.buffer[this.process.producer.idx]){
               this.toastr.warning('No se puede ingresar al buffer', 'Buffer lleno');
               break;
@@ -64,7 +64,7 @@ export class ProducerConsumerService {
             let count = this.process.producer.idx;
             this.process.producer.idx = (count == this.bufferSize - 1)? 0 : ++count;
             this.process.producer.count++;
-            
+
             this.update();
             await this.delay(750);
           }
@@ -72,7 +72,7 @@ export class ProducerConsumerService {
           this.process.consumer.count = 0;
 
           for(let i = 0; i<this.process.workBufferSize; i++){
-            
+
             if(!this.process.buffer[this.process.consumer.idx]){
               this.toastr.warning('No se puede ingresar al buffer', 'Buffer vacío');
               break;
@@ -95,29 +95,32 @@ export class ProducerConsumerService {
     return observable;
   }
 
-  private async roulette(){
+  private async roulette() {
     this.process.turnStatus = 'Seleccionando turno y cantidad...';
     this.process.producer.working = false;
     this.process.consumer.working = false;
     this.update();
 
-    let turn = this.process.turn;
-    const expectedValue : boolean = Math.random() <= 0.55;
+    // Cambiar el valor de this.process.turn en cada ejecución
+    this.process.turn = !this.process.turn;
 
-    for(let i = 4; i <= 20; i++){
-      this.process.turn = turn;
-      this.process.workBufferSize = this.randomNumber(this.minWork, this.maxWork);
-      this.update();
-      await this.delay(Math.pow(i, 2));
-      turn = !turn;
+    this.process.workBufferSize = this.randomNumber(this.minWork, this.maxWork);
+    this.update();
+
+    await this.delay(750); // Puedes ajustar este valor según sea necesario
+
+    // Ahora, establece el valor de working y turnStatus según el turno
+    if (this.process.turn) {
+      this.process.producer.working = true;
+      this.process.turnStatus = 'Turno del productor';
+    } else {
+      this.process.consumer.working = true;
+      this.process.turnStatus = 'Turno del consumidor';
     }
-    
-    this.process.turn = expectedValue;
-    this.process.producer.working = expectedValue;
-    this.process.consumer.working = !expectedValue;
-    this.process.turnStatus = 'Turno del ' + (expectedValue? 'productor' : 'consumidor');
+
     this.update();
   }
+
 
   private async delay(time: number) {
     return new Promise(resolve => {
